@@ -1,0 +1,19 @@
+{
+  "name": "back",
+  "version": "0.1.0",
+  "description": "Base de données du projet Carton",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "thomas-god",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thomas-god/carton"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.9.14"
+  }
+}
