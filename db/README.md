@@ -5,7 +5,8 @@
 ## Description d'un objet carton
 
 ```javascript
-user: String,
+{
+  user: String,
   id: ObjectId,
   parent: {
     type: ObjectId,
@@ -25,7 +26,8 @@ user: String,
       exemples_cartons: [ObjectId],
       plus_loin_cartons: [ObjectId],
     },
-  ],
+  ]
+ }
 ```
 
 ## Lister tous les cartons de la base
