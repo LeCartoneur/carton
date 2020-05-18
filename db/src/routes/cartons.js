@@ -8,11 +8,30 @@ router.get("/list", async (req, res) => {
   res.json(cartons);
 });
 
-// Récupère un carton par son _id
+// Récupère un carton par son _id.
+// req.body.sous_carton (bool) contrôle si
+// on renvoie également les sous cartons.
 router.get("/get", async (req, res) => {
   const carton = await Carton.findById(req.body.id);
-  res.json(carton);
+  const carton_bis = await Carton.findById("5ec2dca4577cd10019ee1bde");
+  if (!req.body.sous_carton) {
+    res.json(carton);
+  } else {
+    for (let v of carton.versions) {
+      Object.assign(v.comment_cartons, await getSubCartons(v.comment_cartons));
+    }
+    res.json(carton);
+  }
 });
+
+// Return a list of carton objects from a list of carton ids.
+async function getSubCartons(list) {
+  let cartons = [];
+  for (const id of list) {
+    cartons.push(await Carton.findById(id));
+  }
+  return cartons;
+}
 
 // Ajoute un nouveau carton
 router.post("/add", async (req, res) => {
