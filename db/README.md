@@ -7,10 +7,8 @@
 ```javascript
 {
   user: String,
-  id: ObjectId,
-  parent: {
-    type: ObjectId,
-  },
+  _id: ObjectId, // Rempli par la base de données à l'insertion
+  parent: ObjectId,
   nom: String,
   private: { type: Boolean, default: false },
   versions: [
