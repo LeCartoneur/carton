@@ -27,7 +27,7 @@
       plus_loin_cartons: [ObjectId],
     },
   ]
- }
+}
 ```
 
 ## Lister tous les cartons de la base
@@ -38,10 +38,14 @@
 
 `POST: /cartons/add`
 
+Avec un body `application/json {carton}`
+
 ## Modifier un carton existant
 
 `POST: /cartons/update`
 
+Avec un body `application/json {id, update: {name: 'Nouveau nom', ...}}`
+
 ## Supprimer tous les cartons
 
-`DELETE: /cartons/reset` avec un body `application/json {id, update: {name: 'Nouveau nom', ...}}`
+`DELETE: /cartons/reset`

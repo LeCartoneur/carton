@@ -8,12 +8,9 @@ router.get("/list", async (req, res) => {
 });
 
 router.post("/add", async (req, res) => {
-  console.log(req.body);
-
-  const carton = new Carton({ user: "admin", nom: req.body.name });
-
-  await carton.save().then(() => {
-    res.send("ok");
+  const carton = new Carton(req.body);
+  await carton.save().then((doc) => {
+    res.json({ id: doc._id });
   });
 });
 
@@ -32,7 +29,7 @@ router.post("/update", async (req, res) => {
 
 router.delete("/reset", async (req, res) => {
   await Carton.deleteMany().then(() => {
-    res.send("Base reset");
+    res.json("Base reset");
   });
 });
 
