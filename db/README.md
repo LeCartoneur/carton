@@ -28,9 +28,15 @@
 }
 ```
 
-## Lister tous les cartons de la base
+## Lister tous les cartons présents dans la base
 
 `GET: /cartons/list`
+
+## Récupérer un carton en particulier
+
+`GET: /cartons/get`
+
+Avec un body `application/json {id}`
 
 ## Ajouter un nouveau carton
 
