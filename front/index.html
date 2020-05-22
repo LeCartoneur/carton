@@ -1,0 +1,43 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <p id="toto">Hello world</p>
+    <button id="btn">Click</button>
+  </body>
+  <script>
+    function getCarton(id) {
+      fetch("http://54.37.229.17:8000/cartons/get", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({
+          id: id,
+          sous_carton: true,
+        }),
+      })
+        .then((response) => {
+          console.log(response);
+          response.json().then((val) => console.log(val));
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+
+    const msg = "salut";
+    let p = document.getElementById("toto");
+    p.innerText = msg;
+
+    let btn = document.getElementById("btn");
+    btn.addEventListener("click", (e) => {
+      let p = document.getElementById("toto");
+      p.innerText += "t";
+      getCarton("5ec38974578c370012c9f41f");
+    });
+  </script>
+</html>
