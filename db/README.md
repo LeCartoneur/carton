@@ -34,7 +34,7 @@
 
 ## Récupérer un carton en particulier
 
-`GET: /cartons/get`
+`POST: /cartons/get`
 
 Avec un body `application/json {id, sous_cartons: Bool}`. L'option `sous_cartons` permet de retourner les sous-cartons en tant qu'objets, sinon c'est les ids qui sont retournés.
 
