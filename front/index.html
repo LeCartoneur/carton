@@ -5,8 +5,24 @@
     <title>Document</title>
   </head>
   <body>
-    <p id="toto">Hello world</p>
-    <button id="btn">Click</button>
+    <div id="titre">
+      <h2>Le Carton</h2>
+    </div>
+    <div class="">
+      <h3>C'est quoi?</h3>
+      <p id="quoi"></p>
+    </div>
+    <div class="">
+      <h3>Ca fait quoi?</h3>
+      <p id="fonction"></p>
+    </div>
+    <div class="">
+      <h3>Ca le fait comment?</h3>
+      <p id="comment"></p>
+      <div id="sous-cartons"></div>
+    </div>
+
+    <button id="btn">GO</button>
   </body>
   <script>
     function getCarton(id) {
@@ -21,23 +37,106 @@
         }),
       })
         .then((response) => {
-          console.log(response);
-          response.json().then((val) => console.log(val));
+          response.json().then((carton) => {
+            fillTemplate(carton, 0);
+          });
         })
         .catch((err) => {
           console.log(err);
         });
     }
 
-    const msg = "salut";
-    let p = document.getElementById("toto");
-    p.innerText = msg;
+    function fillTemplate(carton, version_Id) {
+      let titre = document.getElementById("titre");
+      clearDiv(titre);
+      let titre_h2 = document.createElement("h2");
+      titre.appendChild(titre_h2);
+      titre_h2.innerText = carton.nom;
+      let modif = document.createElement("span");
+      titre_h2.appendChild(modif);
+      let modif_btn = document.createElement("button");
+      modif.appendChild(modif_btn);
+      modif_btn.innerText = "Modifier";
+      modif_btn.addEventListener("click", () => modifier(carton));
+
+      let version = document.createElement("p");
+      titre.appendChild(version);
+      version.innerText = `version: ${version_Id}`;
+
+      if (carton.parent) {
+        let back = document.createElement("button");
+        back.innerText = "retour";
+        back.addEventListener("click", () => getCarton(carton.parent));
+        titre.appendChild(back);
+      }
+
+      let quoi_txt = document.getElementById("quoi");
+      quoi_txt.innerText = carton.versions[version_Id].quoi_texte;
+      let fonction_txt = document.getElementById("fonction");
+      fonction_txt.innerText = carton.versions[version_Id].fonction_texte;
+      let comment_txt = document.getElementById("comment");
+      comment_txt.innerText = carton.versions[version_Id].comment_texte;
+
+      createSubCarton(
+        carton.versions[version_Id].comment_cartons,
+        "sous-cartons"
+      );
+    }
+
+    function createSubCarton(subCartons, div_id) {
+      const div = document.getElementById(div_id);
+      if (div) {
+        clearDiv(div);
+
+        subCartons.forEach((carton) => {
+          let btn = document.createElement("button");
+          btn.innerText = carton.nom;
+          btn.addEventListener("click", () => getCarton(carton._id));
+          div.appendChild(btn);
+        });
+      } else {
+        console.log(
+          `Wrong id when trying to insert sub-cartons, got ${div_id}`
+        );
+      }
+    }
+
+    function clearDiv(div) {
+      while (div.firstChild) {
+        div.removeChild(div.lastChild);
+      }
+    }
+
+    function modifier(carton) {
+      let new_title = prompt("modifier le titre", carton.nom);
+      if (new_title !== carton.nom && new_title) {
+        carton.nom = new_title;
+        fetch("http://54.37.229.17:8000/cartons/update", {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+          },
+          body: JSON.stringify({
+            id: carton._id,
+            update: carton,
+            sous_carton: true,
+          }),
+        })
+          .then((response) => {
+            response.json().then((carton) => {
+              fillTemplate(carton, 0);
+            });
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+    }
 
     let btn = document.getElementById("btn");
     btn.addEventListener("click", (e) => {
-      let p = document.getElementById("toto");
-      p.innerText += "t";
       getCarton("5ec38974578c370012c9f41f");
+      //getCarton("5ec2dca4577cd10019ee1bdc");
     });
   </script>
 </html>
