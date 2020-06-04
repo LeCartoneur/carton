@@ -1,5 +1,6 @@
 const http = require("http");
 const port = 8000;
+//const host = "54.37.229.17";
 const host = "localhost";
 
 /**
