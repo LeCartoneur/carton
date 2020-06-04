@@ -13,18 +13,25 @@ router.get("/list", async (req, res) => {
 // on renvoie également les sous cartons.
 router.post("/get", async (req, res) => {
   const carton = await Carton.findById(req.body.id);
-  if (!req.body.sous_carton) {
-    res.json(carton);
-  } else {
-    for (let v of carton.versions) {
-      Object.assign(v.comment_cartons, await getSubCartons(v.comment_cartons));
-      Object.assign(v.quoi_cartons, await getSubCartons(v.quoi_cartons));
-      Object.assign(
-        v.fonction_cartons,
-        await getSubCartons(v.fonction_cartons)
-      );
+  if (carton) {
+    if (!req.body.sous_carton) {
+      res.json(carton);
+    } else {
+      for (let v of carton.versions) {
+        Object.assign(
+          v.comment_cartons,
+          await getSubCartons(v.comment_cartons)
+        );
+        Object.assign(v.quoi_cartons, await getSubCartons(v.quoi_cartons));
+        Object.assign(
+          v.fonction_cartons,
+          await getSubCartons(v.fonction_cartons)
+        );
+      }
+      res.json(carton);
     }
-    res.json(carton);
+  } else {
+    res.status(404).end();
   }
 });
 
