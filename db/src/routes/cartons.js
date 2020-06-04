@@ -5,7 +5,7 @@ const Carton = require("../Carton.model");
 // Récupère la liste de tous les cartons (et sous-cartons)
 router.get("/list", async (req, res) => {
   const cartons = await Carton.find();
-  res.json(cartons);
+  res.json(cartons.filter((carton) => !carton.parent));
 });
 
 // Récupère un carton par son _id.
