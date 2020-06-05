@@ -28,7 +28,9 @@
 }
 ```
 
-## Lister tous les cartons présents dans la base
+## Récupérer tous les cartons originels dans la base
+
+Un Carton originel est un carton sans carton parent.
 
 `GET: /cartons/list`
 
