@@ -10,14 +10,22 @@ const cartonSchema = new mongoose.Schema({
   versions: [
     {
       nom: String,
-      quoi_texte: "",
-      quoi_cartons: [mongoose.Types.ObjectId],
-      fonction_texte: "",
-      fonction_cartons: [mongoose.Types.ObjectId],
-      comment_texte: "",
-      comment_cartons: [mongoose.Types.ObjectId],
-      exemples_texte: "",
-      exemples_cartons: [mongoose.Types.ObjectId],
+      quoi: {
+        texte: String,
+        sous_cartons: [mongoose.Types.ObjectId],
+      },
+      fonction: {
+        texte: String,
+        sous_cartons: [mongoose.Types.ObjectId],
+      },
+      comment: {
+        texte: String,
+        sous_cartons: [mongoose.Types.ObjectId],
+      },
+      exemples: {
+        texte: String,
+        sous_cartons: [mongoose.Types.ObjectId],
+      },
       plus_loin_cartons: [mongoose.Types.ObjectId],
     },
   ],

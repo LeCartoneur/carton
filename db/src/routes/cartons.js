@@ -19,13 +19,16 @@ router.post("/get", async (req, res) => {
     } else {
       for (let v of carton.versions) {
         Object.assign(
-          v.comment_cartons,
-          await getSubCartons(v.comment_cartons)
+          v.comment.sous_cartons,
+          await getSubCartons(v.comment.sous_cartons)
         );
-        Object.assign(v.quoi_cartons, await getSubCartons(v.quoi_cartons));
         Object.assign(
-          v.fonction_cartons,
-          await getSubCartons(v.fonction_cartons)
+          v.quoi.sous_cartons,
+          await getSubCartons(v.quoi.sous_cartons)
+        );
+        Object.assign(
+          v.fonction.sous_cartons,
+          await getSubCartons(v.fonction.sous_cartons)
         );
       }
       res.json(carton);
@@ -64,13 +67,16 @@ router.post("/update", async (req, res) => {
       } else {
         for (let v of doc.versions) {
           Object.assign(
-            v.comment_cartons,
-            await getSubCartons(v.comment_cartons)
+            v.comment.sous_cartons,
+            await getSubCartons(v.comment.sous_cartons)
           );
-          Object.assign(v.quoi_cartons, await getSubCartons(v.quoi_cartons));
           Object.assign(
-            v.fonction_cartons,
-            await getSubCartons(v.fonction_cartons)
+            v.quoi.sous_cartons,
+            await getSubCartons(v.quoi.sous_cartons)
+          );
+          Object.assign(
+            v.fonction.sous_cartons,
+            await getSubCartons(v.fonction.sous_cartons)
           );
         }
         res.json(doc);

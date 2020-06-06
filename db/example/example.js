@@ -13,11 +13,16 @@ async function main() {
     versions: [
       {
         nom: "Basique",
-        quoi_texte: "Un outil humain",
-        fonction_texte: "Fait des calculs",
-        comment_texte: "Avec des transistors et des algorithmes",
-        comment_cartons: [],
-        exemples_texte: "Ordinateur de bureau, smartphone, serveur.",
+        quoi: {
+          texte: "Un outil humain",
+        },
+        fonction: {
+          texte: "Fait des calculs",
+        },
+        comment: {
+          texte: "Avec des transistors et des algorithmes",
+          sous_cartons: [],
+        },
       },
     ],
   };
@@ -33,14 +38,14 @@ async function main() {
     versions: [
       {
         nom: "Basique",
-        quoi_texte: "Des objets",
-        fonction_texte: "Support physique des calculs d'un ordinateur",
+        quoi: { texte: "Des objets" },
+        fonction: { texte: "Support physique des calculs d'un ordinateur" },
       },
     ],
   };
   res = await api.insertCarton(materiel);
   const materiel_id = res.body.id;
-  ordinateur.versions[0].comment_cartons.push(materiel_id);
+  ordinateur.versions[0].comment.sous_cartons.push(materiel_id);
 
   // Ajout du sous-carton logiciel, avec ordinateur comme parent
   const logiciel = {
@@ -51,8 +56,10 @@ async function main() {
     versions: [
       {
         nom: "Basique",
-        quoi_texte: "Des algorithmes",
-        fonction_texte: "Dit comment et dans quel ordre les calculs sont fait",
+        quoi: { texte: "Des algorithmes" },
+        fonction: {
+          texte: "Dit comment et dans quel ordre les calculs sont fait",
+        },
       },
     ],
   };
@@ -61,8 +68,8 @@ async function main() {
   // Mise à jour de la liste de sous-cartons d'ordinateur
   // avec l'id reçu de matériel
   const logiciel_id = res.body.id;
-  ordinateur.versions[0].comment_cartons.push(logiciel_id);
-  ordinateur.versions[0].comment_texte = `Avec des {${materiel_id}} et des {${logiciel_id}}`;
+  ordinateur.versions[0].comment.sous_cartons.push(logiciel_id);
+  ordinateur.versions[0].comment.texte = `Avec des {${materiel_id}} et des {${logiciel_id}}`;
   await api.updateCarton(ordinateur_id, ordinateur);
 }
 
