@@ -39,12 +39,8 @@ async function main() {
     ],
   };
   res = await api.insertCarton(materiel);
-
-  // Mise à jour de la liste de sous-cartons d'ordinateur
-  // avec l'id reçu de matériel
   const materiel_id = res.body.id;
   ordinateur.versions[0].comment_cartons.push(materiel_id);
-  await api.updateCarton(ordinateur_id, ordinateur);
 
   // Ajout du sous-carton logiciel, avec ordinateur comme parent
   const logiciel = {
@@ -66,6 +62,7 @@ async function main() {
   // avec l'id reçu de matériel
   const logiciel_id = res.body.id;
   ordinateur.versions[0].comment_cartons.push(logiciel_id);
+  ordinateur.versions[0].comment_texte = `Avec des {${materiel_id}} et des {${logiciel_id}}`;
   await api.updateCarton(ordinateur_id, ordinateur);
 }
 
