@@ -27,7 +27,7 @@ export default {
   },
   methods: {
     getCarton(id, version) {
-      fetch('http://localhost:8000/cartons/get', {
+      fetch('http://54.37.229.17:8000/cartons/get', {
         method: 'POST',
         headers: {
           'content-type': 'application/json',
@@ -49,7 +49,7 @@ export default {
     },
   },
   mounted() {
-    this.getCarton('5edba60ab4056b0019b1a988', 0);
+    this.getCarton('5ee3361daf0d2700199caf04', 0);
   },
 };
 </script>

@@ -1,12 +1,25 @@
 <template>
   <div v-if="is_open_volet" :style="volet">
     <h2 @click="toggleVolet" :style="style">{{ config.titre }} -</h2>
-    <p v-html="texte_format"></p>
-    <button @click="toggleSousCarton">{{ is_open_sous_carton ? 'Masquer' : 'Afficher' }}</button>
-    <sous-carton v-if="is_open_sous_carton" />
+    <p>
+      <span
+        v-for="txt in texte_format"
+        :key="txt"
+        @click="callbackSousCartonText(txt)"
+        :class="{ txt_link: txt.interact }"
+      >
+        {{ txt.txt }}
+      </span>
+    </p>
+    <button @click="toggleSousCarton">
+      {{ is_open_sous_carton ? "Masquer" : "Afficher" }}
+    </button>
+    <sous-carton v-if="is_open_sous_carton" :data="sous_cartons" />
   </div>
   <div v-else :style="volet">
-    <h2 @click="toggleVolet" :style="style" class="tranche">+ {{ config.titre }}</h2>
+    <h2 @click="toggleVolet" :style="style" class="tranche">
+      + {{ config.titre }}
+    </h2>
   </div>
 </template>
 
@@ -39,7 +52,8 @@ export default {
       is_open_volet: true,
       is_open_sous_carton: false,
       current_id_sous_carton: '',
-      texte_format: '',
+      texte_format: [],
+      sous_cartons: ''
     }
   },
   computed: {
@@ -72,15 +86,36 @@ export default {
       this.is_open_volet = !this.is_open_volet
     },
     formatText() {
+      let txt_fmt = []
       const regex = /{([^}]+)}/g
-      this.texte_format = this.data.texte.replace(regex, (id) => {
-        return `
-          <span>
-          ${this.data.sous_cartons.find((carton) => carton._id === id.slice(1, -1)).nom}
-          </span>
-        `
-      })
+      let str = this.data.texte
+      let res
+      let start_index = 0
+      while ((res = regex.exec(str)) !== null) {
+        let reg_index = regex.lastIndex - res[0].length;
+        if(start_index !== reg_index){
+          txt_fmt.push({txt: str.slice(start_index,reg_index), interact: false})
+        }
+        txt_fmt.push({txt: this.data.sous_cartons.find((carton) => carton._id === res[0].slice(1, -1)).nom, interact: true, id: res[0].slice(1, -1)})
+        start_index = regex.lastIndex;
+
+//console.log(`Found ${res[0]}. regIndex: ${reg_index} Next starts at ${regex.lastIndex}.`);
+      
+  }
+  if(start_index !== str.length){
+          txt_fmt.push({txt: str.slice(start_index,str.length), interact: false})
+        }
+
+  console.log(txt_fmt);
+
+      this.texte_format = txt_fmt
     },
+    callbackSousCartonText(txt) {
+      if (txt.interact) {
+        this.is_open_sous_carton = true
+        this.sous_cartons = this.data.sous_cartons.find((carton) => carton._id === txt.id)
+      }
+    }
   },
   mounted() {
     this.formatText()
@@ -92,5 +127,9 @@ export default {
 .tranche {
   writing-mode: vertical-rl;
   text-orientation: mixed;
+}
+
+.txt_link:hover {
+  background-color: red;
 }
 </style>
