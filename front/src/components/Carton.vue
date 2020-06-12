@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import Volet from './Volet.vue';
+import Volet from './Volet.vue'
 
 export default {
   components: { Volet },
@@ -23,7 +23,7 @@ export default {
       volets: ['quoi', 'comment', 'fonction'],
       carton: {},
       carton_version: 0,
-    };
+    }
   },
   methods: {
     getCarton(id, version) {
@@ -36,22 +36,18 @@ export default {
           id,
           sous_carton: true,
         }),
-      })
-        .then((response) => {
-          response.json().then((carton) => {
-            this.carton = carton;
-            this.carton_version = version;
-          });
+      }).then((response) => {
+        response.json().then((carton) => {
+          this.carton = carton
+          this.carton_version = version
         })
-        .catch((err) => {
-          console.log(err);
-        });
+      })
     },
   },
   mounted() {
-    this.getCarton('5ee3361daf0d2700199caf04', 0);
+    this.getCarton('5ee3361daf0d2700199caf04', 0)
   },
-};
+}
 </script>
 
 <style>
