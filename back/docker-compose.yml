@@ -3,7 +3,7 @@ services:
   api:
     container_name: api
     restart: always
-    build: .
+    build: ./api
     env_file:
       - ./api/api.env
   mongo:
