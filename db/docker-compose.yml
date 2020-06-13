@@ -6,8 +6,6 @@ services:
     build: .
     env_file:
       - api.env
-    ports:
-      - "8000:8000"
   mongo:
     container_name: mongo
     image: mongo
