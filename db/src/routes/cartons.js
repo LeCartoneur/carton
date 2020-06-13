@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Carton = require("../Carton.model");
+const { populate } = require("../plugins/populate.js");
 
 // Récupère la liste de tous les cartons (et sous-cartons)
 router.get("/list", async (req, res) => {
@@ -85,11 +86,18 @@ router.post("/update", async (req, res) => {
   );
 });
 
-// Supprime tous les cartons
-router.delete("/reset", async (req, res) => {
-  await Carton.deleteMany().then(() => {
-    res.json("Base reset");
+// Si on est dans l'alpha, la route supprime les cartons existants
+// et insère des dummy cartons dans la base vide.
+if (process.env.ALPHA === "true") {
+  router.post("/reset", async (req, res) => {
+    if (req.body.mdp === process.env.RESET_KEY) {
+      await Carton.deleteMany();
+      await populate();
+      res.status(205).end();
+    } else {
+      res.status(404).end();
+    }
   });
-});
+}
 
 module.exports = router;

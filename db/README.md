@@ -52,6 +52,8 @@ Avec un body `application/json {carton}`
 
 Avec un body `application/json {id, update: {name: 'Nouveau nom', ...}}`
 
-## Supprimer tous les cartons
+## Réinitialiser la base
 
-`DELETE: /cartons/reset`
+- Route : `DELETE /cartons/reset`
+- Body : `application/json {mdp: RESET_KEY}`
+- Response : 205 en cas de succès.
