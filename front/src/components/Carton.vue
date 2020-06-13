@@ -1,5 +1,5 @@
 <template>
-  <div class="carton">
+  <div v-if="Object.keys(carton).length > 0" class="carton">
     <h1>{{ carton.nom }}</h1>
     <div class="volets-container">
       <volet
@@ -9,6 +9,9 @@
         :data="carton.versions[carton_version][volet]"
       ></volet>
     </div>
+  </div>
+  <div v-else class="carton">
+    <h1>Il n'y a pas de carton :(</h1>
   </div>
 </template>
 
@@ -45,7 +48,7 @@ export default {
     },
   },
   mounted() {
-    this.getCarton('5ee3361daf0d2700199caf04', 0)
+    this.getCarton('5ee4daee560ec1001917040a', 0)
   },
 }
 </script>

@@ -4,7 +4,7 @@
     <p>
       <span
         v-for="txt in texte_format"
-        :key="txt"
+        :key="txt.txt"
         @click="callbackSousCartonText(txt)"
         :class="{ txt_link: txt.interact }"
       >
@@ -17,7 +17,9 @@
     <sous-carton v-if="is_open_sous_carton" :data="sous_cartons" />
   </div>
   <div v-else :style="volet">
-    <h2 @click="toggleVolet" :style="style" class="tranche">+ {{ config.titre }}</h2>
+    <h2 @click="toggleVolet" :style="style" class="tranche">
+      + {{ config.titre }}
+    </h2>
   </div>
 </template>
 
