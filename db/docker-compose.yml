@@ -4,10 +4,10 @@ services:
     container_name: projet
     restart: always
     build: .
+    env_file:
+      - api.env
     ports:
       - "8000:8000"
-    links:
-      - mongo
   mongo:
     container_name: mongo
     image: mongo
