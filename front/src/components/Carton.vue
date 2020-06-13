@@ -30,7 +30,7 @@ export default {
   },
   methods: {
     getCarton(id, version) {
-      fetch('http://54.37.229.17:8000/cartons/get', {
+      fetch('https://api.carton.combiendecarbone.fr/cartons/get', {
         method: 'POST',
         headers: {
           'content-type': 'application/json',
