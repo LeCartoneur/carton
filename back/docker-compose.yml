@@ -5,7 +5,7 @@ services:
     restart: always
     build: .
     env_file:
-      - api.env
+      - ./api/api.env
   mongo:
     container_name: mongo
     image: mongo
@@ -41,11 +41,11 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: /home/thomas/carton/db/views
+      device: /home/thomas/carton/back/views
       o: bind
   dhparam:
     driver: local
     driver_opts:
       type: none
-      device: /home/thomas/carton/db/dhparam
+      device: /home/thomas/carton/back/dhparam
       o: bind
