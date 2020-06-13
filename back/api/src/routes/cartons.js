@@ -18,20 +18,7 @@ router.post("/get", async (req, res) => {
     if (!req.body.sous_carton) {
       res.json(carton);
     } else {
-      for (let v of carton.versions) {
-        Object.assign(
-          v.comment.sous_cartons,
-          await getSubCartons(v.comment.sous_cartons)
-        );
-        Object.assign(
-          v.quoi.sous_cartons,
-          await getSubCartons(v.quoi.sous_cartons)
-        );
-        Object.assign(
-          v.fonction.sous_cartons,
-          await getSubCartons(v.fonction.sous_cartons)
-        );
-      }
+      Object.assign(carton, await populateVersions(carton));
       res.json(carton);
     }
   } else {
@@ -39,11 +26,27 @@ router.post("/get", async (req, res) => {
   }
 });
 
-// Return a list of carton objects from a list of carton ids.
+// For every version of the carton, populate the types
+// ["comment", "quoi", "fonction", "exemples"] with the
+// corresponding sub-cartons.
+async function populateVersions(carton) {
+  for (let v of carton.versions) {
+    for (let type of ["comment", "quoi", "fonction", "exemples"]) {
+      Object.assign(
+        v[type].sous_cartons,
+        await getSubCartons(v[type].sous_cartons)
+      );
+    }
+  }
+  return carton;
+}
+
+// Return a list of carton objects from a list of sub-carton
+// objects {carton_id, version_id}
 async function getSubCartons(list) {
   let cartons = [];
-  for (const id of list) {
-    cartons.push(await Carton.findById(id));
+  for (let carton of list) {
+    cartons.push(await Carton.findById(carton.carton_id));
   }
   return cartons;
 }
@@ -66,20 +69,7 @@ router.post("/update", async (req, res) => {
       if (!req.body.sous_carton) {
         res.json(doc);
       } else {
-        for (let v of doc.versions) {
-          Object.assign(
-            v.comment.sous_cartons,
-            await getSubCartons(v.comment.sous_cartons)
-          );
-          Object.assign(
-            v.quoi.sous_cartons,
-            await getSubCartons(v.quoi.sous_cartons)
-          );
-          Object.assign(
-            v.fonction.sous_cartons,
-            await getSubCartons(v.fonction.sous_cartons)
-          );
-        }
+        Object.assign(carton, await populateVersions(carton));
         res.json(doc);
       }
     }

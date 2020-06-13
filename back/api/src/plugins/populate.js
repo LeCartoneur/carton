@@ -67,8 +67,8 @@ async function populate() {
 
   // Mise à jour de la liste de sous-cartons d'ordinateur
   // avec l'id reçu de matériel
-  ordinateur.versions[0].comment.sous_cartons.push(materiel_id);
-  ordinateur.versions[0].comment.sous_cartons.push(logiciel_id);
+  ordinateur.versions[0].comment.sous_cartons.push({ carton_id: materiel_id });
+  ordinateur.versions[0].comment.sous_cartons.push({ carton_id: logiciel_id });
   ordinateur.versions[0].comment.texte = `Avec des {${materiel_id}} et des {${logiciel_id}}.`;
   await Carton.findByIdAndUpdate(ordinateur_id, ordinateur);
 }

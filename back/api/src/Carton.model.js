@@ -12,21 +12,48 @@ const cartonSchema = new mongoose.Schema({
       nom: String,
       quoi: {
         texte: String,
-        sous_cartons: [mongoose.Types.ObjectId],
+        sous_cartons: [
+          {
+            carton_id: mongoose.Types.ObjectId,
+            version_id: { type: Number, default: 0 },
+          },
+        ],
       },
       fonction: {
         texte: String,
-        sous_cartons: [mongoose.Types.ObjectId],
+        sous_cartons: [
+          {
+            carton_id: mongoose.Types.ObjectId,
+            version_id: { type: Number, default: 0 },
+          },
+        ],
       },
       comment: {
         texte: String,
-        sous_cartons: [mongoose.Types.ObjectId],
+        sous_cartons: [
+          {
+            carton_id: mongoose.Types.ObjectId,
+            version_id: { type: Number, default: 0 },
+          },
+        ],
       },
       exemples: {
         texte: String,
-        sous_cartons: [mongoose.Types.ObjectId],
+        sous_cartons: [
+          {
+            carton_id: mongoose.Types.ObjectId,
+            version_id: { type: Number, default: 0 },
+          },
+        ],
       },
-      plus_loin_cartons: [mongoose.Types.ObjectId],
+      plus_loin: {
+        sous_cartons: [
+          {
+            carton_id: mongoose.Types.ObjectId,
+            version_id: { type: Number, default: 0 },
+          },
+        ],
+      },
     },
   ],
 });
