@@ -33,7 +33,7 @@ services:
       - web-root:/var/www/html
     depends_on:
       - webserver
-    command: certonly --webroot --webroot-path=/var/www/html --email contact@combiendecarbone.fr --agree-tos --no-eff-email --staging -d api.carton.combiendecarbone.fr
+    command: certonly --webroot --webroot-path=/var/www/html --email contact@combiendecarbone.fr --agree-tos --no-eff-email --force-renewal -d api.carton.combiendecarbone.fr
 volumes:
   certbot-etc:
   certbot-var:
