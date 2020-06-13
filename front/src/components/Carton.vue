@@ -12,6 +12,17 @@
   </div>
   <div v-else class="carton">
     <h1>Il n'y a pas de carton :(</h1>
+    <h3>... mais vous pouvez en sélectionner un parmi cette liste !</h3>
+    <ul>
+      <li
+        v-for="carton in cartons_list"
+        :key="carton.nom"
+        @click="getCarton(carton._id, 0)"
+        class="carton-link"
+      >
+        {{ carton.nom }}
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -26,6 +37,7 @@ export default {
       volets: ['quoi', 'comment', 'fonction'],
       carton: {},
       carton_version: 0,
+      cartons_list: [],
     }
   },
   methods: {
@@ -46,9 +58,18 @@ export default {
         })
       })
     },
+    getCartonsList() {
+      fetch('https://api.carton.combiendecarbone.fr/cartons/list', {
+        method: 'GET',
+      }).then((response) => {
+        response.json().then((cartons_list) => {
+          this.cartons_list = cartons_list
+        })
+      })
+    },
   },
   mounted() {
-    this.getCarton('5ee4daee560ec1001917040a', 0)
+    this.getCartonsList()
   },
 }
 </script>
@@ -69,5 +90,9 @@ export default {
   flex-wrap: nowrap;
   align-items: stretch;
   justify-content: space-between;
+}
+
+.carton-link:hover {
+  background-color: coral;
 }
 </style>
