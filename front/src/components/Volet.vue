@@ -1,5 +1,5 @@
 <template>
-  <div v-if="is_open_volet" :style="volet">
+  <div v-if="!reduced" :style="volet">
     <h2 @click="toggleVolet" :style="style">{{ config.titre }} -</h2>
     <p>
       <span
@@ -11,10 +11,14 @@
         {{ txt.txt }}
       </span>
     </p>
-    <button @click="toggleSousCarton">
+    <!-- <button @click="toggleSousCarton">
       {{ is_open_sous_carton ? 'Masquer' : 'Afficher' }}
-    </button>
-    <sous-carton v-if="is_open_sous_carton" :data="sous_cartons" />
+    </button> -->
+    <sous-carton
+      v-if="is_open_sous_carton"
+      :data="sous_cartons"
+      @change-carton="(carton_id) => changeCarton(carton_id)"
+    />
   </div>
   <div v-else :style="volet">
     <h2 @click="toggleVolet" :style="style" class="tranche">
@@ -46,10 +50,9 @@ export default {
     SousCarton,
   },
   // TODO: use correct Vue.js props definition/syntax
-  props: ['type', 'data'],
+  props: ['type', 'data', 'reduced'],
   data() {
     return {
-      is_open_volet: true,
       is_open_sous_carton: false,
       current_id_sous_carton: '',
       texte_format: [],
@@ -61,11 +64,12 @@ export default {
       return configs[this.type]
     },
     style() {
-      return `background-color: ${this.config.color}`
+      return `
+        background-color: ${this.config.color}
+      `
     },
     volet() {
       return `
-        margin: 1rem;
         padding: 1rem;
         border: 1px solid ${this.config.color};
         flex-grow: 1;
@@ -83,7 +87,7 @@ export default {
       this.is_open_sous_carton = !this.is_open_sous_carton
     },
     toggleVolet() {
-      this.is_open_volet = !this.is_open_volet
+      this.$emit('toggle-reduced')
     },
     formatText() {
       let txt_fmt = []
@@ -120,6 +124,9 @@ export default {
         this.sous_cartons = this.data.sous_cartons.find((carton) => carton._id === txt.id)
       }
     },
+    changeCarton(carton_id) {
+      this.$emit('change-carton', carton_id)
+    },
   },
   mounted() {
     this.formatText()
@@ -127,13 +134,18 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .tranche {
   writing-mode: vertical-rl;
   text-orientation: mixed;
 }
 
+.txt_link {
+  font-style: italic;
+}
+
 .txt_link:hover {
-  background-color: red;
+  background-color: rgb(253, 182, 182);
+  font-style: normal;
 }
 </style>
