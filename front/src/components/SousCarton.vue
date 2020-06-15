@@ -23,16 +23,26 @@ export default {
 
 <style>
 .sous-carton {
-  border: 1px solid rgb(158, 158, 158);
-  border-radius: 10px;
+  box-sizing: border-box;
+  border: 8px inset rgb(121, 93, 44);
+  background-color: rgb(165, 136, 85);
+
   padding: 2px;
   margin: 10px 0px;
 }
 .sous-carton h3 {
   margin: 5px auto 7px;
+  color: blueviolet;
 }
+
+.sous-carton:hover {
+  background-color: rgb(153, 182, 182);
+  cursor: pointer;
+}
+
 .sous-carton h3:hover {
-  text-decoration: underline dotted;
+  text-decoration: underline;
+  font-style: bold;
 }
 
 .description {

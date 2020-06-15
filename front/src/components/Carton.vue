@@ -110,7 +110,6 @@ export default {
   width: 100%;
   height: 100%;
   border: 18px inset rgb(121, 93, 44);
-  /*background-color: #640000;*/
   background-color: rgb(165, 136, 85);
   overflow-x: hidden;
   overflow-y: auto;
