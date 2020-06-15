@@ -2,21 +2,21 @@
   <div v-if="!reduced" :style="volet" class="volet">
     <div class="toggle" @click="toggleVolet">-</div>
     <h2>{{ config.titre }}</h2>
-    <p class="volet-texte">
-      <span
-        v-for="txt in texte_format"
-        :key="txt.txt"
-        @click="callbackSousCartonText(txt)"
-        :class="{ txt_link: txt.interact }"
-      >{{ txt.txt }}</span>
-    </p>
 
-    <sous-carton
+    <visionneuse-texte
+      :raw_txt="data.texte"
+      :sous_cartons="data.sous_cartons"
+      class="volet-texte"
+      @open-sous-carton="(id) => openSousCarton(id)"
+    />
+
+    <visionneuse-sous-carton
       v-if="is_open_sous_carton"
-      :data="sous_cartons"
-      @change-carton="(carton_id) => changeCarton(carton_id)"
+      :carton="sous_carton"
+      @change-carton="(id) => changeCarton(id)"
     />
   </div>
+
   <div v-else :style="volet" class="tranche" @click="toggleVolet">
     <div class="toggle" @click="toggleVolet">+</div>
     <h2>{{ config.titre }}</h2>
@@ -24,7 +24,8 @@
 </template>
 
 <script>
-import SousCarton from './SousCarton.vue'
+import VisionneuseSousCarton from './VisionneuseSousCarton.vue'
+import VisionneuseTexte from './VisionneuseTexte.vue'
 
 const configs = {
   quoi: {
@@ -43,16 +44,15 @@ const configs = {
 
 export default {
   components: {
-    SousCarton,
+    VisionneuseSousCarton,
+    VisionneuseTexte,
   },
   // TODO: use correct Vue.js props definition/syntax
   props: ['type', 'data', 'reduced'],
   data() {
     return {
       is_open_sous_carton: false,
-      current_id_sous_carton: '',
-      texte_format: [],
-      sous_cartons: '',
+      sous_carton: {},
     }
   },
   computed: {
@@ -66,59 +66,17 @@ export default {
       `
     },
   },
-  watch: {
-    data() {
-      this.formatText()
-    },
-  },
   methods: {
-    toggleSousCarton() {
-      this.is_open_sous_carton = !this.is_open_sous_carton
+    openSousCarton(id) {
+      this.is_open_sous_carton = true
+      this.sous_carton = this.data.sous_cartons.find((carton) => carton._id === id)
     },
     toggleVolet() {
       this.$emit('toggle-reduced')
     },
-    formatText() {
-      let txt_fmt = []
-      const regex = /{([^}]+)}/g
-      let str = this.data.texte
-      let res
-      let start_index = 0
-      while ((res = regex.exec(str)) !== null) {
-        let reg_index = regex.lastIndex - res[0].length
-        if (start_index !== reg_index) {
-          txt_fmt.push({
-            txt: str.slice(start_index, reg_index),
-            interact: false,
-          })
-        }
-        txt_fmt.push({
-          txt: this.data.sous_cartons.find((carton) => carton._id === res[0].slice(1, -1)).nom,
-          interact: true,
-          id: res[0].slice(1, -1),
-        })
-        start_index = regex.lastIndex
-      }
-      if (start_index !== str.length) {
-        txt_fmt.push({
-          txt: str.slice(start_index, str.length),
-          interact: false,
-        })
-      }
-      this.texte_format = txt_fmt
-    },
-    callbackSousCartonText(txt) {
-      if (txt.interact) {
-        this.is_open_sous_carton = true
-        this.sous_cartons = this.data.sous_cartons.find((carton) => carton._id === txt.id)
-      }
-    },
     changeCarton(carton_id) {
       this.$emit('change-carton', carton_id)
     },
-  },
-  mounted() {
-    this.formatText()
   },
 }
 </script>
@@ -186,20 +144,7 @@ export default {
   color: rgba(255, 255, 255, 1);
   box-shadow: 0 5px 15px rgba(145, 92, 182, 0.4);
 }
-
 .volet-texte {
   grid-row: 2;
-}
-
-.txt_link {
-  color: blueviolet;
-  background-color: rgb(240, 229, 229);
-}
-
-.txt_link:hover {
-  background-color: rgb(153, 182, 182);
-  text-decoration: underline;
-  font-style: bold;
-  cursor: pointer;
 }
 </style>
