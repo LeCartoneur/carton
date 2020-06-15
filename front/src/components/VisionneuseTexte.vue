@@ -26,21 +26,20 @@ export default {
     fmt_txt() {
       let fmt_txt = []
       if (this.raw_txt) {
-        const regex = /{([^}]+)}/g
+        const regex = /{([^}]+)}\(([^}]+)\)/g
         let res,
           start_index = 0
         while ((res = regex.exec(this.raw_txt)) !== null) {
-          let reg_index = regex.lastIndex - res[0].length
-          if (start_index !== reg_index) {
+          if (start_index !== res.index) {
             fmt_txt.push({
-              txt: this.raw_txt.slice(start_index, reg_index),
+              txt: this.raw_txt.slice(start_index, res.index),
               interact: false,
             })
           }
           fmt_txt.push({
-            txt: this.sous_cartons.find((carton) => carton._id === res[0].slice(1, -1)).nom,
+            txt: res[2] ? res[2] : this.sous_cartons.find((carton) => carton._id === res[1]).nom,
             interact: true,
-            id: res[0].slice(1, -1),
+            id: res[1],
           })
           start_index = regex.lastIndex
         }
