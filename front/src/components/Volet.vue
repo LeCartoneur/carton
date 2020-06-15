@@ -1,20 +1,30 @@
 <template>
   <div v-if="!reduced" :style="volet" class="volet">
     <div class="toggle" @click="toggleVolet">-</div>
-    <h2>{{ config.titre }}</h2>
+    <h2>
+      {{ config.titre }}
+      <button @click="editor = !editor">
+        <svg class="icon"><path :d="mdiCog" /></svg>
+      </button>
+    </h2>
 
-    <visionneuse-texte
-      :raw_txt="data.texte"
-      :sous_cartons="data.sous_cartons"
-      class="volet-texte"
-      @open-sous-carton="(id) => openSousCarton(id)"
-    />
-
-    <visionneuse-sous-carton
-      v-if="is_open_sous_carton"
-      :carton="sous_carton"
-      @change-carton="(id) => changeCarton(id)"
-    />
+    <div v-if="editor">
+      <editeur-texte></editeur-texte>
+      <editeur-liste-cartons></editeur-liste-cartons>
+    </div>
+    <div v-else>
+      <visionneuse-texte
+        :raw_txt="data.texte"
+        :sous_cartons="data.sous_cartons"
+        class="volet-texte"
+        @open-sous-carton="(id) => openSousCarton(id)"
+      />
+      <visionneuse-sous-carton
+        v-if="is_open_sous_carton"
+        :carton="sous_carton"
+        @change-carton="(id) => changeCarton(id)"
+      />
+    </div>
   </div>
 
   <div v-else :style="volet" class="tranche" @click="toggleVolet">
@@ -26,6 +36,9 @@
 <script>
 import VisionneuseSousCarton from './VisionneuseSousCarton.vue'
 import VisionneuseTexte from './VisionneuseTexte.vue'
+import EditeurListeCartons from './EditeurListeCartons.vue'
+import EditeurTexte from './EditeurTexte.vue'
+import { mdiCog } from '@mdi/js'
 
 const configs = {
   quoi: {
@@ -46,6 +59,8 @@ export default {
   components: {
     VisionneuseSousCarton,
     VisionneuseTexte,
+    EditeurListeCartons,
+    EditeurTexte,
   },
   // TODO: use correct Vue.js props definition/syntax
   props: ['type', 'data', 'reduced'],
@@ -53,6 +68,8 @@ export default {
     return {
       is_open_sous_carton: false,
       sous_carton: {},
+      mdiCog,
+      editor: false,
     }
   },
   computed: {
@@ -146,5 +163,11 @@ export default {
 }
 .volet-texte {
   grid-row: 2;
+}
+
+.icon {
+  display: inline-block;
+  width: 23px;
+  height: 23px;
 }
 </style>
