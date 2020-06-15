@@ -99,6 +99,23 @@ export default {
 </script>
 
 <style scoped>
+@media (max-width: 700px) {
+  .toggle {
+    visibility: hidden;
+  }
+}
+
+@media (min-width: 700px) {
+  .volet {
+    flex-grow: 1;
+    padding: 1rem;
+    text-align: center;
+    flex-basis: 33%;
+    display: grid;
+    grid-template-rows: 15% 30% auto 50%;
+  }
+}
+
 .toggle {
   position: absolute;
   top: 5px;
@@ -131,15 +148,6 @@ export default {
   border-width: 5px;
 
   transition: all 0.4s ease-in-out;
-}
-
-.volet {
-  flex-grow: 1;
-  padding: 1rem;
-  text-align: center;
-  flex-basis: 33%;
-  display: grid;
-  grid-template-rows: 15% 30% auto 50%;
 }
 
 .tranche {
