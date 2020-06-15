@@ -18,7 +18,7 @@ export default {
 <style>
 #app {
   box-sizing: border-box;
-  height: 95vh;
+  height: 100vh;
 
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
