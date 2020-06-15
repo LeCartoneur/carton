@@ -69,7 +69,7 @@ async function populate() {
   // avec l'id reçu de matériel
   ordinateur.versions[0].comment.sous_cartons.push({ carton_id: materiel_id });
   ordinateur.versions[0].comment.sous_cartons.push({ carton_id: logiciel_id });
-  ordinateur.versions[0].comment.texte = `Avec des {${materiel_id}} et des {${logiciel_id}}.`;
+  ordinateur.versions[0].comment.texte = `Avec des {${materiel_id}}(matériels) et des {${logiciel_id}}(logiciels).`;
   await Carton.findByIdAndUpdate(ordinateur_id, ordinateur);
 }
 
