@@ -77,13 +77,21 @@ router.post("/update", async (req, res) => {
 });
 
 // Met à jour le texte d'une catégorie d'un carton existant
-router.post("/update/text", async (req, res) => {
+router.post("/update/text", (req, res) => {
   let path = `versions.${req.body.version}.${req.body.cat}.texte`;
-  let { err, doc } = await Carton.findByIdAndUpdate(req.body.id, {
-    $set: { [path]: req.body.txt },
-  });
-  console.log(path, err, doc);
-  res.end();
+  Carton.findByIdAndUpdate(
+    req.body.id,
+    {
+      $set: { [path]: req.body.txt },
+    },
+    (err, doc) => {
+      if (err) {
+        res.status(400).end();
+      } else {
+        res.end();
+      }
+    }
+  );
 });
 
 // Si on est dans l'alpha, la route supprime les cartons existants
