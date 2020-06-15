@@ -9,9 +9,16 @@
     </h2>
 
     <div v-if="editor">
-      <editeur-texte></editeur-texte>
-      <editeur-liste-cartons></editeur-liste-cartons>
+      <editeur-texte
+        :parent_id="parent_id"
+        :category="category"
+        :raw_txt="data.texte"
+        :sous_cartons="data.sous_cartons"
+        @reload="changeCarton(parent_id)"
+      />
+      <editeur-liste-cartons />
     </div>
+
     <div v-else>
       <visionneuse-texte
         :raw_txt="data.texte"
