@@ -109,45 +109,49 @@ export default {
   box-sizing: border-box;
   width: 100%;
   height: 100%;
-  border: 18px inset rgb(121, 93, 44);
+  border-style: inset;
+  border-color: rgb(121, 93, 44);
   background-color: rgb(165, 136, 85);
   overflow-x: hidden;
   overflow-y: auto;
-
-  display: grid;
-  grid-template-columns: 40px auto 40px;
-  grid-template-rows: 15% 75% auto;
 }
 
 .nom {
-  grid-column-start: 2;
-  grid-column-end: 2;
-  grid-row-start: 1;
-  grid-row-end: 1;
-
+  grid-column: 2;
+  grid-row: 1;
+  font-size: 3.5vw;
   text-align: center;
 }
 
 .volets-container {
   display: flex;
-  flex-direction: row;
+
   grid-gap: 0.5em;
 
-  grid-column-start: 2;
-  grid-column-end: 2;
-  grid-row-start: 2;
-  grid-row-end: 2;
+  grid-column: 2;
+  grid-row: 2;
 }
 
 @media (min-width: 700px) {
+  .carton {
+    display: grid;
+    grid-template-columns: 40px auto 40px;
+    grid-template-rows: 15% 75% auto;
+
+    border-width: 18px;
+  }
   .volets-container {
-    grid-template-columns: repeat(3, 1fr);
+    flex-direction: row;
   }
 }
 
 @media (max-width: 700px) {
+  .carton {
+    border-width: 8px;
+  }
+
   .volets-container {
-    grid-template-rows: repeat(3, 1fr);
+    flex-direction: column;
   }
 }
 
