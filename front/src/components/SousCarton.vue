@@ -1,9 +1,7 @@
 <template>
-  <div class="sous-carton">
-    <h3 @click="changeCarton">{{ data.nom }}</h3>
-    <p class="description">
-      {{ data.versions[0].fonction.texte }}
-    </p>
+  <div class="sous-carton" @click="changeCarton">
+    <h3>{{ data.nom }}</h3>
+    <p class="description">{{ data.versions[0].fonction.texte }}</p>
   </div>
 </template>
 
@@ -39,6 +37,6 @@ export default {
 
 .description {
   margin-top: 0;
-  color: red;
+  color: white;
 }
 </style>

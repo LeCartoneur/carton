@@ -1,6 +1,6 @@
 <template>
   <div v-if="Object.keys(carton).length > 0" class="carton">
-    <h1>
+    <h1 class="nom">
       {{ carton.nom }}
       <span @click="getCarton(parent, 0)" v-if="parent">🔙</span>
     </h1>
@@ -17,17 +17,17 @@
     </div>
   </div>
   <div v-else class="carton">
-    <h1>Il n'y a pas de carton :(</h1>
-    <h3>... mais vous pouvez en sélectionner un parmi cette liste !</h3>
-    <ul>
+    <h1 class="nom">Vous n'avez pas de Carton ouvert! :(</h1>
+    <h3
+      style="grid-area: 3 / 2 / 3 / 2;"
+    >... mais vous pouvez en sélectionner un parmi cette liste !</h3>
+    <ul style="grid-area: 2 / 2 / 2 / 2;">
       <li
         v-for="carton in cartons_originels"
         :key="carton.nom"
         @click="getCarton(carton._id, 0)"
         class="carton-link"
-      >
-        {{ carton.nom }}
-      </li>
+      >{{ carton.nom }}</li>
     </ul>
   </div>
 </template>
@@ -83,7 +83,7 @@ export default {
     },
     updateVoletsList() {
       let volets = []
-      for (let cat of ['quoi', 'comment', 'fonction']) {
+      for (let cat of ['quoi', 'fonction', 'comment']) {
         let item = this.carton.versions[this.carton_version][cat]
         if (
           (item.sous_cartons ? item.sous_cartons.length > 0 : false) ||
@@ -109,15 +109,35 @@ export default {
   box-sizing: border-box;
   width: 100%;
   height: 100%;
-  border: 2px solid black;
-  background-color: rgba(255, 250, 243, 0.541);
-  overflow: scroll;
+  border: 18px inset rgb(121, 93, 44);
+  /*background-color: #640000;*/
+  background-color: rgb(165, 136, 85);
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  display: grid;
+  grid-template-columns: 40px auto 40px;
+  grid-template-rows: 15% 75% auto;
+}
+
+.nom {
+  grid-column-start: 2;
+  grid-column-end: 2;
+  grid-row-start: 1;
+  grid-row-end: 1;
+
+  text-align: center;
 }
 
 .volets-container {
-  display: grid;
-  grid-gap: 1em;
-  padding: 1em;
+  display: flex;
+  flex-direction: row;
+  grid-gap: 0.5em;
+
+  grid-column-start: 2;
+  grid-column-end: 2;
+  grid-row-start: 2;
+  grid-row-end: 2;
 }
 
 @media (min-width: 700px) {

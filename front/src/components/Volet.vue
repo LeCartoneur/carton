@@ -1,29 +1,25 @@
 <template>
-  <div v-if="!reduced" :style="volet">
-    <h2 @click="toggleVolet" :style="style">{{ config.titre }} -</h2>
+  <div v-if="!reduced" :style="volet" class="volet">
+    <div class="toggle" @click="toggleVolet">-</div>
+    <h2>{{ config.titre }}</h2>
     <p>
       <span
         v-for="txt in texte_format"
         :key="txt.txt"
         @click="callbackSousCartonText(txt)"
         :class="{ txt_link: txt.interact }"
-      >
-        {{ txt.txt }}
-      </span>
+      >{{ txt.txt }}</span>
     </p>
-    <!-- <button @click="toggleSousCarton">
-      {{ is_open_sous_carton ? 'Masquer' : 'Afficher' }}
-    </button> -->
+
     <sous-carton
       v-if="is_open_sous_carton"
       :data="sous_cartons"
       @change-carton="(carton_id) => changeCarton(carton_id)"
     />
   </div>
-  <div v-else :style="volet">
-    <h2 @click="toggleVolet" :style="style" class="tranche">
-      + {{ config.titre }}
-    </h2>
+  <div v-else :style="volet" class="tranche" @click="toggleVolet">
+    <div class="toggle" @click="toggleVolet">+</div>
+    <h2>{{ config.titre }}</h2>
   </div>
 </template>
 
@@ -31,17 +27,17 @@
 import SousCarton from './SousCarton.vue'
 
 const configs = {
-  fonction: {
-    titre: 'Keçafait',
-    color: 'orange',
-  },
   quoi: {
     titre: 'Keçeçe',
-    color: 'green',
+    color: 'rgba(0, 229, 255, 1)',
+  },
+  fonction: {
+    titre: 'Keçafait',
+    color: 'rgba(29, 233, 182, 1)',
   },
   comment: {
     titre: "Komment ça l'fait",
-    color: 'blue',
+    color: 'rgba(0, 230, 118, 1)',
   },
 }
 
@@ -63,17 +59,10 @@ export default {
     config() {
       return configs[this.type]
     },
-    style() {
-      return `
-        background-color: ${this.config.color}
-      `
-    },
     volet() {
       return `
-        padding: 1rem;
-        border: 1px solid ${this.config.color};
-        flex-grow: 1;
-        flex-shrink: 1;
+        background-color: ${this.config.color};
+        border-color: ${this.config.color};
       `
     },
   },
@@ -135,17 +124,75 @@ export default {
 </script>
 
 <style scoped>
+.toggle {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 35px;
+  height: 35px;
+  border-radius: 20px;
+
+  background-color: black;
+  color: white;
+}
+
+.tranche .toggle {
+  top: 20px;
+  right: unset;
+
+  background-color: white;
+  color: black;
+}
+
+.volet,
 .tranche {
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
+  position: relative;
+  border-style: inset;
+  border-width: 5px;
+
+  transition: all 0.4s ease-in-out;
+}
+
+.volet {
+  flex-grow: 1;
+  padding: 1rem;
+  text-align: center;
+}
+
+.tranche {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  writing-mode: vertical-lr;
+  min-height: 10em;
+  line-height: 2em;
+}
+
+.volet .toggle:hover {
+  background-color: rgba(255, 255, 255, 1);
+  color: firebrick;
+  box-shadow: 0 5px 15px rgba(145, 92, 182, 0.4);
+}
+
+.tranche:hover {
+  color: rgba(255, 255, 255, 1);
+  box-shadow: 0 5px 15px rgba(145, 92, 182, 0.4);
 }
 
 .txt_link {
-  font-style: italic;
+  color: blueviolet;
+  background-color: rgb(240, 229, 229);
 }
 
 .txt_link:hover {
-  background-color: rgb(253, 182, 182);
-  font-style: normal;
+  background-color: rgb(153, 182, 182);
+  text-decoration: underline;
+  font-style: bold;
+  cursor: pointer;
 }
 </style>
