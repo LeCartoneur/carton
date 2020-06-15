@@ -52,6 +52,20 @@ Avec un body `application/json {carton}`
 
 Avec un body `application/json {id, update: {name: 'Nouveau nom', ...}}`
 
+## Modifier le texte d'une catégorie d'un carton existant
+
+- Route : `POST /cartons/update/text`
+- Body : application/json
+
+```javascript
+{
+  id: "carton_id",
+  version: "version_id",
+  cat: "quoi|fonction|comment|exemples",
+  txt: "nouveau texte"
+}
+```
+
 ## Réinitialiser la base
 
 - Route : `DELETE /cartons/reset`
