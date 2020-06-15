@@ -23,6 +23,8 @@ export default {
 
 <style>
 .sous-carton {
+  grid-row: 4;
+
   box-sizing: border-box;
   border: 8px inset rgb(121, 93, 44);
   background-color: rgb(165, 136, 85);

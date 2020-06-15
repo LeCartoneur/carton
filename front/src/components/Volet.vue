@@ -2,7 +2,7 @@
   <div v-if="!reduced" :style="volet" class="volet">
     <div class="toggle" @click="toggleVolet">-</div>
     <h2>{{ config.titre }}</h2>
-    <p>
+    <p class="volet-texte">
       <span
         v-for="txt in texte_format"
         :key="txt.txt"
@@ -162,6 +162,9 @@ export default {
   flex-grow: 1;
   padding: 1rem;
   text-align: center;
+  flex-basis: 33%;
+  display: grid;
+  grid-template-rows: 15% 30% auto 50%;
 }
 
 .tranche {
@@ -182,6 +185,10 @@ export default {
 .tranche:hover {
   color: rgba(255, 255, 255, 1);
   box-shadow: 0 5px 15px rgba(145, 92, 182, 0.4);
+}
+
+.volet-texte {
+  grid-row: 2;
 }
 
 .txt_link {
