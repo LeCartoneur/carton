@@ -18,16 +18,18 @@
   </div>
   <div v-else class="carton">
     <h1 class="nom">Vous n'avez pas de Carton ouvert! :(</h1>
-    <h3
-      style="grid-area: 3 / 2 / 3 / 2;"
-    >... mais vous pouvez en sélectionner un parmi cette liste !</h3>
+    <h3 style="grid-area: 3 / 2 / 3 / 2;">
+      ... mais vous pouvez en sélectionner un parmi cette liste !
+    </h3>
     <ul style="grid-area: 2 / 2 / 2 / 2;">
       <li
         v-for="carton in cartons_originels"
         :key="carton.nom"
         @click="getCarton(carton._id, 0)"
         class="carton-link"
-      >{{ carton.nom }}</li>
+      >
+        {{ carton.nom }}
+      </li>
     </ul>
   </div>
 </template>
@@ -39,6 +41,8 @@ export default {
   components: { Volet },
   data() {
     return {
+      api_url: 'https://api.carton.combiendecarbone.fr/',
+      //api_url: 'http://localhost:8000/',
       cartons_originels: [],
       carton: {},
       carton_version: 0,
@@ -55,7 +59,7 @@ export default {
   },
   methods: {
     getCarton(id, version) {
-      fetch('https://api.carton.combiendecarbone.fr/cartons/get', {
+      fetch(this.api_url + 'cartons/get', {
         method: 'POST',
         headers: {
           'content-type': 'application/json',
@@ -73,7 +77,7 @@ export default {
       })
     },
     getCartonsList() {
-      fetch('https://api.carton.combiendecarbone.fr/cartons/list', {
+      fetch(this.api_url + 'cartons/list', {
         method: 'GET',
       }).then((response) => {
         response.json().then((cartons_originels) => {
