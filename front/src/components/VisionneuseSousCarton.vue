@@ -1,21 +1,21 @@
 <template>
   <div class="sous-carton" @click="changeCarton">
-    <h3>{{ data.nom }}</h3>
-    <p class="description">{{ data.versions[0].fonction.texte }}</p>
+    <h3>{{ carton.nom }}</h3>
+    <p class="description">{{ carton.versions[0].fonction.texte }}</p>
   </div>
 </template>
 
 <script>
 export default {
   props: {
-    data: {
+    carton: {
       type: Object,
       required: true,
     },
   },
   methods: {
     changeCarton() {
-      this.$emit('change-carton', this.data._id)
+      this.$emit('change-carton', this.carton._id)
     },
   },
 }
