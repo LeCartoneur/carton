@@ -8,8 +8,9 @@
       <volet
         v-for="volet in volets"
         :key="volet.cat"
-        :type="volet.cat"
+        :category="volet.cat"
         :data="carton.versions[carton_version][volet.cat]"
+        :parent_id="carton._id"
         :reduced="volet.reduced"
         @toggle-reduced="toggleVolet(volet)"
         @change-carton="(id) => getCarton(id, 0)"

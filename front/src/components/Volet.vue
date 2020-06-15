@@ -63,7 +63,23 @@ export default {
     EditeurTexte,
   },
   // TODO: use correct Vue.js props definition/syntax
-  props: ['type', 'data', 'reduced'],
+  props: {
+    category: {
+      type: String,
+      required: true,
+    },
+    data: {
+      type: Object,
+      default: () => {},
+    },
+    reduced: {
+      type: Boolean,
+      default: false,
+    },
+    parent_id: {
+      type: String,
+    },
+  },
   data() {
     return {
       is_open_sous_carton: false,
@@ -74,7 +90,7 @@ export default {
   },
   computed: {
     config() {
-      return configs[this.type]
+      return configs[this.category]
     },
     volet() {
       return `
