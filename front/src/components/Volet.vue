@@ -8,16 +8,13 @@
       </button>
     </h2>
 
-    <div v-if="editor">
-      <editeur-texte
-        :parent_id="parent_id"
-        :category="category"
-        :raw_txt="data.texte"
-        :sous_cartons="data.sous_cartons"
-        @reload="changeCarton(parent_id)"
-      />
-      <editeur-liste-cartons />
-    </div>
+    <editeur
+      v-if="editor"
+      :parent_id="parent_id"
+      :category="category"
+      :data="data"
+      @reload="reloadCarton"
+    />
 
     <div v-else>
       <visionneuse-texte
@@ -43,8 +40,7 @@
 <script>
 import VisionneuseSousCarton from './VisionneuseSousCarton.vue'
 import VisionneuseTexte from './VisionneuseTexte.vue'
-import EditeurListeCartons from './EditeurListeCartons.vue'
-import EditeurTexte from './EditeurTexte.vue'
+import Editeur from './Editeur.vue'
 import { mdiCog } from '@mdi/js'
 
 const configs = {
@@ -66,8 +62,7 @@ export default {
   components: {
     VisionneuseSousCarton,
     VisionneuseTexte,
-    EditeurListeCartons,
-    EditeurTexte,
+    Editeur,
   },
   // TODO: use correct Vue.js props definition/syntax
   props: {
@@ -116,6 +111,10 @@ export default {
     },
     changeCarton(carton_id) {
       this.$emit('change-carton', carton_id)
+    },
+    reloadCarton() {
+      this.$emit('change-carton', this.parent_id)
+      this.editor = false
     },
   },
 }
