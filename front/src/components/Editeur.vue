@@ -8,6 +8,7 @@
     <editeur-liste-cartons
       :sous_cartons_noms="sous_cartons_noms"
       :cartons_no_refs="cartons_no_refs"
+      @add-sous-carton="(e) => addSousCartons(e)"
     />
     <button @click="update">Save</button>
   </div>
@@ -37,6 +38,8 @@ export default {
   },
   data() {
     return {
+      //api_url: 'http://localhost:8000/',
+      api_url: 'https://api.carton.combiendecarbone.fr/',
       txt_edit: fmtTxtDb2Edit(this.data.texte, this.data.sous_cartons),
       new_sous_cartons: [],
       refs_no_cartons: [],
@@ -60,6 +63,10 @@ export default {
     },
   },
   methods: {
+    addSousCartons(new_name) {
+      this.new_sous_cartons.push({ nom: new_name })
+      this.checkSousCartonsRefs()
+    },
     /**
      * All references in the texte must reference an existing sous carton
      * and all sous cartons must be referenced by at least one link in the
@@ -86,8 +93,26 @@ export default {
         }
       })
     },
-    updateTxt() {
-      fetch('https://api.carton.combiendecarbone.fr/cartons/update/text', {
+    postNewCarton(nom) {
+      return fetch(this.api_url + 'cartons/add', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({
+          nom,
+          user: 'exemple',
+        }),
+      })
+        .then((response) => {
+          return response.json()
+        })
+        .then((body) => {
+          return body.id
+        })
+    },
+    updateParentSousCartons(sous_cartons_id) {
+      return fetch(this.api_url + 'cartons/update/sous_cartons', {
         method: 'POST',
         headers: {
           'content-type': 'application/json',
@@ -96,17 +121,41 @@ export default {
           id: this.parent_id,
           version: '0',
           cat: this.category,
-          txt: fmtTxtEdit2Db(this.txt_edit, this.data.sous_cartons),
+          carton: { carton_id: sous_cartons_id, version: 0 },
         }),
       }).then((response) => {
-        if (response.status === 200) {
-          this.$emit('reload')
-        }
+        return response.status === 200
       })
     },
-    update() {
+    postTexteUpdate(sous_cartons) {
+      return fetch(this.api_url + 'cartons/update/text', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: this.parent_id,
+          version: '0',
+          cat: this.category,
+          txt: fmtTxtEdit2Db(this.txt_edit, sous_cartons),
+        }),
+      }).then((response) => {
+        return response.status === 200
+      })
+    },
+    async update() {
       if (this.update_ready) {
-        this.updateTxt()
+        let cartons = this.data.sous_cartons.map((carton) => {
+          return { nom: carton.nom, _id: carton._id }
+        })
+        await Promise.all(
+          this.new_sous_cartons.map(async (carton) => {
+            let id = await this.postNewCarton(carton.non)
+            cartons.push({ nom: carton.nom, _id: id })
+            console.log(await this.updateParentSousCartons(id))
+          })
+        )
+        this.postTexteUpdate(cartons)
       }
     },
   },
