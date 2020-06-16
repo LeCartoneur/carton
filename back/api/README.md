@@ -66,6 +66,20 @@ Avec un body `application/json {id, update: {name: 'Nouveau nom', ...}}`
 }
 ```
 
+## Ajouter un sous-carton à la catégorie d'un carton
+
+- Route : `POST /cartons/update/sous_carton`
+- Body : application/json
+
+```javascript
+{
+  id: "carton_id",
+  version: "version_id",
+  cat: "quoi|fonction|comment|exemples",
+  carton: {carton_id, version: 0}
+}
+```
+
 ## Réinitialiser la base
 
 - Route : `DELETE /cartons/reset`
