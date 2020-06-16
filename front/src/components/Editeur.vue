@@ -152,7 +152,6 @@ export default {
           this.new_sous_cartons.map(async (carton) => {
             let id = await this.postNewCarton(carton.non)
             cartons.push({ nom: carton.nom, _id: id })
-            console.log(await this.updateParentSousCartons(id))
           })
         )
         this.postTexteUpdate(cartons)
