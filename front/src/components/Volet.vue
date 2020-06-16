@@ -1,6 +1,6 @@
 <template>
   <div v-if="!reduced" :style="volet" class="volet">
-    <div class="toggle" @click="toggleVolet">-</div>
+    <div v-if="can_reduce" class="toggle" @click="toggleVolet">-</div>
     <h2>
       {{ config.titre }}
       <button @click="editor = !editor">
@@ -80,6 +80,10 @@ export default {
     },
     parent_id: {
       type: String,
+    },
+    can_reduce: {
+      type: Boolean,
+      default: true,
     },
   },
   data() {

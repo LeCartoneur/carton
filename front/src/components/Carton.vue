@@ -12,6 +12,7 @@
         :data="carton.versions[carton_version][volet.cat]"
         :parent_id="carton._id"
         :reduced="volet.reduced"
+        :can_reduce="n_volets < 2"
         @toggle-reduced="toggleVolet(volet)"
         @change-carton="(id) => getCarton(id, 0)"
       ></volet>
