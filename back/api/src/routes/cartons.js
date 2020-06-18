@@ -96,7 +96,6 @@ router.post("/update/text", (req, res) => {
 
 // Ajout un sous-carton à la liste des sous cartons d'un carton
 router.post("/update/sous_cartons", (req, res) => {
-  console.log(req.body);
   let path = `versions.${req.body.version}.${req.body.cat}.sous_cartons`;
   Carton.findByIdAndUpdate(
     req.body.id,
