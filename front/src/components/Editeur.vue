@@ -100,7 +100,7 @@ export default {
           'content-type': 'application/json',
         },
         body: JSON.stringify({
-          nom,
+          nom: nom,
           user: 'exemple',
         }),
       })
@@ -150,7 +150,7 @@ export default {
         })
         await Promise.all(
           this.new_sous_cartons.map(async (carton) => {
-            let id = await this.postNewCarton(carton.non)
+            let id = await this.postNewCarton(carton.nom)
             cartons.push({ nom: carton.nom, _id: id })
           })
         )
