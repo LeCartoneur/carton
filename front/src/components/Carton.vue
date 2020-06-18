@@ -1,5 +1,6 @@
 <template>
   <div v-if="Object.keys(carton).length > 0" class="carton">
+    <toolbar :mode_actif="mode_actif" @mode-update="(id) => updateMode(id)" />
     <h1 class="nom">
       {{ carton.nom }}
       <span @click="getCarton(parent, 0)" v-if="parent">🔙</span>
@@ -20,27 +21,26 @@
   </div>
   <div v-else class="carton">
     <h1 class="nom">Vous n'avez pas de Carton ouvert! :(</h1>
-    <h3 style="grid-area: 3 / 2 / 3 / 2;">
-      ... mais vous pouvez en sélectionner un parmi cette liste !
-    </h3>
+    <h3
+      style="grid-area: 3 / 2 / 3 / 2;"
+    >... mais vous pouvez en sélectionner un parmi cette liste !</h3>
     <ul style="grid-area: 2 / 2 / 2 / 2;">
       <li
         v-for="carton in cartons_originels"
         :key="carton.nom"
         @click="getCarton(carton._id, 0)"
         class="carton-link"
-      >
-        {{ carton.nom }}
-      </li>
+      >{{ carton.nom }}</li>
     </ul>
   </div>
 </template>
 
 <script>
 import Volet from './Volet.vue'
+import Toolbar from './Toolbar.vue'
 
 export default {
-  components: { Volet },
+  components: { Volet, Toolbar },
   data() {
     return {
       api_url: 'https://api.carton.combiendecarbone.fr/',
@@ -49,6 +49,7 @@ export default {
       carton: {},
       carton_version: 0,
       volets: [],
+      mode_actif: 0, //0: Visionneuse ||1: Editeuse ||2: Commenteuse
     }
   },
   computed: {
@@ -102,6 +103,9 @@ export default {
     },
     toggleVolet(volet) {
       volet.reduced = !volet.reduced
+    },
+    updateMode(id){
+      this.mode_actif = id;
     },
   },
   mounted() {
