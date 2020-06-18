@@ -101,6 +101,8 @@ export default {
         },
         body: JSON.stringify({
           nom: nom,
+          parent: this.parent_id,
+          //TODO: replaced by the current user when implemented
           user: 'exemple',
         }),
       })
@@ -152,6 +154,7 @@ export default {
           this.new_sous_cartons.map(async (carton) => {
             let id = await this.postNewCarton(carton.nom)
             cartons.push({ nom: carton.nom, _id: id })
+            this.updateParentSousCartons(id)
           })
         )
         this.postTexteUpdate(cartons)
