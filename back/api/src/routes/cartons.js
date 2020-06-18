@@ -46,7 +46,18 @@ async function populateVersions(carton) {
 async function getSubCartons(list) {
   let cartons = [];
   for (let carton of list) {
-    cartons.push(await Carton.findById(carton.carton_id));
+    let res = await Carton.findById(carton.carton_id).lean();
+    let categories = {};
+    if (res.versions[carton.version_id]) {
+      categories = res.versions[carton.version_id];
+    } else {
+      let id_default = res.versions.find((ver) => ver.nom === "default");
+      categories = res.versions[id_default];
+    }
+    delete categories.nom;
+    delete categories._id;
+    delete res.versions;
+    cartons.push({ ...res, ...categories });
   }
   return cartons;
 }
