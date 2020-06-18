@@ -19,6 +19,23 @@ const model_category = {
   },
 };
 
+const model_version = {
+  nom: {
+    type: String,
+    required: true,
+  },
+  quoi: model_category,
+  fonction: model_category,
+  comment: model_category,
+  exemples: model_category,
+  plus_loin: {
+    sous_cartons: {
+      type: [model_sous_carton],
+      default: () => [],
+    },
+  },
+};
+
 const cartonSchema = new mongoose.Schema({
   user: {
     type: String,
@@ -33,24 +50,14 @@ const cartonSchema = new mongoose.Schema({
     required: true,
   },
   private: { type: Boolean, default: false },
-  versions: [
-    {
-      nom: {
-        type: String,
-        default: "",
+  versions: {
+    type: [model_version],
+    default: () => [
+      {
+        nom: "default",
       },
-      quoi: model_category,
-      fonction: model_category,
-      comment: model_category,
-      exemples: model_category,
-      plus_loin: {
-        sous_cartons: {
-          type: [model_sous_carton],
-          default: () => [],
-        },
-      },
-    },
-  ],
+    ],
+  },
 });
 
 const Carton = mongoose.model("Carton", cartonSchema);
