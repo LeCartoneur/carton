@@ -1,19 +1,15 @@
 <template>
   <div id="app">
-    <carton />
+    <div id="nav">
+      <router-link to="/">Home</router-link>
+      |
+      <router-link to="/visionneuse">Visionneuse</router-link>
+      |
+      <router-link to="/about">About</router-link>
+    </div>
+    <router-view />
   </div>
 </template>
-
-<script>
-import Carton from './components/Carton.vue';
-
-export default {
-  name: 'App',
-  components: {
-    Carton,
-  },
-};
-</script>
 
 <style>
 #app {

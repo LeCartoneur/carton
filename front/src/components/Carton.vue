@@ -1,9 +1,9 @@
 <template>
-  <div v-if="Object.keys(carton).length > 0" class="carton">
+  <div class="carton">
     <toolbar :mode_actif="mode_actif" @mode-update="(id) => updateMode(id)" />
     <h1 class="nom">
       {{ carton.nom }}
-      <span @click="getCarton(parent, 0)" v-if="parent">🔙</span>
+      <span @click="goToCarton(parent)" v-if="parent">🔙</span>
     </h1>
     <div class="volets-container">
       <volet
@@ -16,26 +16,9 @@
         :can_reduce="n_volets < 2"
         :editor="mode_actif === 1"
         @toggle-reduced="toggleVolet(volet)"
-        @change-carton="(id) => getCarton(id, 0)"
+        @change-carton="(id) => goToCarton(id)"
       ></volet>
     </div>
-  </div>
-
-  <div v-else class="carton">
-    <h1 class="nom">Vous n'avez pas de Carton ouvert! :(</h1>
-    <h3 style="grid-area: 3 / 2 / 3 / 2;">
-      ... mais vous pouvez en sélectionner un parmi cette liste !
-    </h3>
-    <ul style="grid-area: 2 / 2 / 2 / 2;">
-      <li
-        v-for="carton in cartons_originels"
-        :key="carton.nom"
-        @click="getCarton(carton._id, 0)"
-        class="carton-link"
-      >
-        {{ carton.nom }}
-      </li>
-    </ul>
   </div>
 </template>
 
@@ -45,27 +28,34 @@ import Toolbar from './Toolbar.vue'
 
 export default {
   components: { Volet, Toolbar },
+  props: {
+    carton_id: {
+      required: true,
+    },
+  },
   data() {
     return {
       api_url: 'https://api.carton.combiendecarbone.fr/',
       //api_url: 'http://localhost:8000/',
-      cartons_originels: [],
       carton: {},
       carton_version: 0,
+      carton_ready: false,
       mode_actif: 0, //0: Visionneuse ||1: Editeuse ||2: Commenteuse
     }
   },
   computed: {
     volets() {
       let volets = []
-      for (let cat of ['quoi', 'fonction', 'comment']) {
-        let item = this.carton.versions[this.carton_version][cat]
-        if (
-          item.sous_cartons.length > 0 ||
-          item.texte !== '' ||
-          this.mode_actif === 1 // On affiche tout en mode éditeur
-        ) {
-          volets.push({ cat: cat, reduced: false })
+      if (this.carton_ready) {
+        for (let cat of ['quoi', 'fonction', 'comment']) {
+          let item = this.carton.versions[this.carton_version][cat]
+          if (
+            item.sous_cartons.length > 0 ||
+            item.texte !== '' ||
+            this.mode_actif === 1 // On affiche tout en mode éditeur
+          ) {
+            volets.push({ cat: cat, reduced: false })
+          }
         }
       }
       return volets
@@ -78,31 +68,24 @@ export default {
     },
   },
   methods: {
-    getCarton(id, version) {
+    loadCarton() {
       fetch(this.api_url + 'cartons/get', {
         method: 'POST',
         headers: {
           'content-type': 'application/json',
         },
         body: JSON.stringify({
-          id,
+          id: this.carton_id,
           sous_carton: true,
         }),
-      }).then((response) => {
-        response.json().then((carton) => {
+      })
+        .then((response) => {
+          return response.json()
+        })
+        .then((carton) => {
           this.carton = carton
-          this.carton_version = version
+          this.carton_ready = true
         })
-      })
-    },
-    getCartonsList() {
-      fetch(this.api_url + 'cartons/list', {
-        method: 'GET',
-      }).then((response) => {
-        response.json().then((cartons_originels) => {
-          this.cartons_originels = cartons_originels
-        })
-      })
     },
     toggleVolet(volet) {
       volet.reduced = !volet.reduced
@@ -110,9 +93,19 @@ export default {
     updateMode(id) {
       this.mode_actif = id
     },
+    goToCarton(id) {
+      this.$router.push({ path: `/visionneuse/${id}` })
+    },
   },
   mounted() {
-    this.getCartonsList()
+    this.loadCarton()
+  },
+  watch: {
+    $route(to, from) {
+      if (to.params.carton_id !== from.params.carton_id) {
+        this.loadCarton()
+      }
+    },
   },
 }
 </script>
