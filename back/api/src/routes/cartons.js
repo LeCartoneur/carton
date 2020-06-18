@@ -72,19 +72,26 @@ router.post("/add", async (req, res) => {
 
 // Met à jour un carton existant
 router.post("/update", async (req, res) => {
-  await Carton.findByIdAndUpdate(
-    req.body.id,
-    req.body.update,
-    { new: true },
-    async (err, doc) => {
-      if (!req.body.sous_carton) {
-        res.json(doc);
-      } else {
-        Object.assign(carton, await populateVersions(carton));
-        res.json(doc);
-      }
-    }
-  );
+  try {
+    const operations = ["push", "set"];
+    await Promise.all(
+      req.body.updates.map((update) => {
+        if (operations.includes(update.operation)) {
+          return Carton.findByIdAndUpdate(req.body.id, {
+            [`$${update.operation}`]: {
+              [update.path]: update.value,
+            },
+          });
+        } else {
+          return Promise.resolve();
+        }
+      })
+    );
+  } catch (error) {
+    res.status(400).send(error);
+  } finally {
+    res.end();
+  }
 });
 
 // Met à jour le texte d'une catégorie d'un carton existant
