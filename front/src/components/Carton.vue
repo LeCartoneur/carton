@@ -52,11 +52,24 @@ export default {
       cartons_originels: [],
       carton: {},
       carton_version: 0,
-      volets: [],
       mode_actif: 0, //0: Visionneuse ||1: Editeuse ||2: Commenteuse
     }
   },
   computed: {
+    volets() {
+      let volets = []
+      for (let cat of ['quoi', 'fonction', 'comment']) {
+        let item = this.carton.versions[this.carton_version][cat]
+        if (
+          item.sous_cartons.length > 0 ||
+          item.texte !== '' ||
+          this.mode_actif === 1 // On affiche tout en mode éditeur
+        ) {
+          volets.push({ cat: cat, reduced: false })
+        }
+      }
+      return volets
+    },
     n_volets() {
       return this.volets.length > 0 ? this.volets.filter((vol) => vol.reduced).length : 0
     },
@@ -79,7 +92,6 @@ export default {
         response.json().then((carton) => {
           this.carton = carton
           this.carton_version = version
-          this.updateVoletsList()
         })
       })
     },
@@ -91,19 +103,6 @@ export default {
           this.cartons_originels = cartons_originels
         })
       })
-    },
-    updateVoletsList() {
-      let volets = []
-      for (let cat of ['quoi', 'fonction', 'comment']) {
-        let item = this.carton.versions[this.carton_version][cat]
-        if (
-          (item.sous_cartons ? item.sous_cartons.length > 0 : false) ||
-          (item.texte ? item.texte !== '' : false)
-        ) {
-          volets.push({ cat: cat, reduced: false })
-        }
-      }
-      this.volets = volets
     },
     toggleVolet(volet) {
       volet.reduced = !volet.reduced
