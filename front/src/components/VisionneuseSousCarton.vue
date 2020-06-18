@@ -1,7 +1,7 @@
 <template>
   <div class="sous-carton" @click="changeCarton">
     <h3>{{ carton.nom }}</h3>
-    <p class="description">{{ carton.versions[0].fonction.texte }}</p>
+    <p class="description">{{ description }}</p>
   </div>
 </template>
 
@@ -11,6 +11,11 @@ export default {
     carton: {
       type: Object,
       required: true,
+    },
+  },
+  computed: {
+    description() {
+      return this.carton.fonction.texte ? this.carton.fonction.texte : 'Pas de texte.'
     },
   },
   methods: {
