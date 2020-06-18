@@ -35,8 +35,6 @@ export default {
       if(selected.name !== this.buttons[this.mode_actif].name)
       {
         for(const [i, cur_butt] of this.buttons.entries()){
-          console.log(i);
-          
           if(cur_butt.active)
           {
             cur_butt.active = false;
