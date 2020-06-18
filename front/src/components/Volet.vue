@@ -3,9 +3,6 @@
     <div v-if="can_reduce" class="toggle" @click="toggleVolet">-</div>
     <h2>
       {{ config.titre }}
-      <button @click="editor = !editor">
-        <svg class="icon"><path :d="mdiCog" /></svg>
-      </button>
     </h2>
 
     <editeur
@@ -85,13 +82,16 @@ export default {
       type: Boolean,
       default: true,
     },
+    editor: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
       is_open_sous_carton: false,
       sous_carton: {},
       mdiCog,
-      editor: false,
     }
   },
   computed: {
@@ -118,7 +118,6 @@ export default {
     },
     reloadCarton() {
       this.$emit('change-carton', this.parent_id)
-      this.editor = false
     },
   },
 }

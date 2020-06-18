@@ -14,23 +14,27 @@
         :parent_id="carton._id"
         :reduced="volet.reduced"
         :can_reduce="n_volets < 2"
+        :editor="mode_actif === 1"
         @toggle-reduced="toggleVolet(volet)"
         @change-carton="(id) => getCarton(id, 0)"
       ></volet>
     </div>
   </div>
+
   <div v-else class="carton">
     <h1 class="nom">Vous n'avez pas de Carton ouvert! :(</h1>
-    <h3
-      style="grid-area: 3 / 2 / 3 / 2;"
-    >... mais vous pouvez en sélectionner un parmi cette liste !</h3>
+    <h3 style="grid-area: 3 / 2 / 3 / 2;">
+      ... mais vous pouvez en sélectionner un parmi cette liste !
+    </h3>
     <ul style="grid-area: 2 / 2 / 2 / 2;">
       <li
         v-for="carton in cartons_originels"
         :key="carton.nom"
         @click="getCarton(carton._id, 0)"
         class="carton-link"
-      >{{ carton.nom }}</li>
+      >
+        {{ carton.nom }}
+      </li>
     </ul>
   </div>
 </template>
@@ -104,8 +108,8 @@ export default {
     toggleVolet(volet) {
       volet.reduced = !volet.reduced
     },
-    updateMode(id){
-      this.mode_actif = id;
+    updateMode(id) {
+      this.mode_actif = id
     },
   },
   mounted() {
