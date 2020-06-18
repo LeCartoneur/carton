@@ -38,7 +38,6 @@
 import VisionneuseSousCarton from './VisionneuseSousCarton.vue'
 import VisionneuseTexte from './VisionneuseTexte.vue'
 import Editeur from './Editeur.vue'
-import { mdiCog } from '@mdi/js'
 
 const configs = {
   quoi: {
@@ -91,7 +90,6 @@ export default {
     return {
       is_open_sous_carton: false,
       sous_carton: {},
-      mdiCog,
     }
   },
   computed: {
