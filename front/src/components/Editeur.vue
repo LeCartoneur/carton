@@ -97,7 +97,8 @@ export default {
       if (idx > -1) {
         this.new_sous_cartons.splice(idx, 1)
       } else {
-        this.del_sous_cartons.push({ nom: carton_nom })
+        let carton_id = this.data.sous_cartons.find((carton) => carton.nom === carton_nom)._id
+        this.del_sous_cartons.push({ nom: carton_nom, _id: carton_id })
       }
       this.checkSousCartonsRefs()
     },
@@ -148,28 +149,43 @@ export default {
      * Wrapper to the API route 'cartons/delete' to remove a carton from the DB.
      */
     async deleteSousCarton(carton_id) {
-      let res = await fetch(this.api_url + 'cartons/add', {
+      let res = await fetch(this.api_url + 'cartons/delete', {
         method: 'DELETE',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ id: carton_id }),
       })
       return res.status === 200 ? Promise.resolve() : Promise.reject()
     },
-    updateParentSousCartons(sous_cartons_id) {
-      return fetch(this.api_url + 'cartons/update/sous_cartons', {
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-        },
-        body: JSON.stringify({
-          id: this.parent_id,
-          version: '0',
-          cat: this.category,
-          carton: { carton_id: sous_cartons_id, version: 0 },
-        }),
-      }).then((response) => {
-        return response.status === 200
-      })
+    /**
+     * Wrapper to the API route 'carton/update' for updating a carton's sous-carton list.
+     * @param {['push', 'pull']} mode
+     * @param {MongoDB.id} sous_carton_id
+     */
+    updateParentSousCartons(mode, sous_carton_id) {
+      if (['push', 'pull'].includes(mode)) {
+        let value =
+          mode === 'push'
+            ? { carton_id: sous_carton_id, version: 0 }
+            : { carton_id: sous_carton_id }
+        return fetch(this.api_url + 'cartons/update', {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify({
+            id: this.parent_id,
+            updates: [
+              {
+                path: `versions.0.${this.category}.sous_cartons`,
+                operation: mode,
+                value: value,
+              },
+            ],
+          }),
+        }).then((response) => {
+          return response.status === 200
+        })
+      } else return false
     },
     postTexteUpdate(sous_cartons) {
       return fetch(this.api_url + 'cartons/update/text', {
@@ -204,13 +220,15 @@ export default {
             .map(async (carton) => {
               let id = await this.postNewCarton(carton.nom)
               cartons.push({ nom: carton.nom, _id: id })
-              this.updateParentSousCartons(id)
+              this.updateParentSousCartons('push', id)
             })
             .concat(
               this.del_sous_cartons.map(async (carton) => {
-                this.deleteSousCarton(carton.id)
-                let idx = cartons.findIndex((c) => c._id === carton.id)
+                await this.deleteSousCarton(carton._id)
+                let idx = cartons.findIndex((c) => c._id === carton._id)
                 if (idx > -1) cartons.splice(idx, 1)
+                this.updateParentSousCartons('pull', carton._id)
+
                 // TODO: on success must update the parent's sous-cartons list
               })
             )
