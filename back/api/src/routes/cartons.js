@@ -3,10 +3,16 @@ const router = express.Router();
 const Carton = require("../Carton.model");
 const { populate } = require("../plugins/populate.js");
 
-// Récupère la liste de tous les cartons (et sous-cartons)
+// Récupère la liste de tous les cartons originels
 router.get("/list", async (req, res) => {
   const cartons = await Carton.find();
   res.json(cartons.filter((carton) => !carton.parent));
+});
+
+// Récupère la liste de tous les cartons (originels et sous-cartons)
+router.get("/list/all", async (req, res) => {
+  const cartons = await Carton.find();
+  res.json(cartons);
 });
 
 // Récupère un carton par son _id.

@@ -60,6 +60,11 @@ Un Carton originel est un carton sans carton parent.
 - Route : `GET: /cartons/list`
 - Response : `application/json` la liste des cartons originels.
 
+## Récupérer tous les cartons (originels et sous-cartons) de la base
+
+- Route : `GET: /cartons/list/all`
+- Response : `application/json` la liste des cartons.
+
 ## Récupérer un carton par son id
 
 - Route : `POST: /cartons/get`
