@@ -36,36 +36,46 @@ router.post("/get", async (req, res) => {
 // ["comment", "quoi", "fonction", "exemples"] with the
 // corresponding sub-cartons.
 async function populateVersions(carton) {
-  for (let v of carton.versions) {
-    for (let type of ["comment", "quoi", "fonction", "exemples"]) {
-      Object.assign(
-        v[type].sous_cartons,
-        await getSubCartons(v[type].sous_cartons)
-      );
+  try {
+    for (let v of carton.versions) {
+      for (let type of ["comment", "quoi", "fonction", "exemples"]) {
+        Object.assign(
+          v[type].sous_cartons,
+          await getSubCartons(v[type].sous_cartons)
+        );
+      }
     }
+    return carton;
+  } catch (err) {
+    return Promise.reject(err);
   }
-  return carton;
 }
 
 // Return a list of carton objects from a list of sub-carton
 // objects {carton_id, version_id}
 async function getSubCartons(list) {
-  let cartons = [];
-  for (let carton of list) {
-    let res = await Carton.findById(carton.carton_id).lean();
-    let categories = {};
-    if (res.versions[carton.version_id]) {
-      categories = res.versions[carton.version_id];
-    } else {
-      let id_default = res.versions.find((ver) => ver.nom === "default");
-      categories = res.versions[id_default];
+  try {
+    let cartons = [];
+    for (let carton of list) {
+      let res = await Carton.findById(carton.carton_id).lean();
+      if (res) {
+        let categories = {};
+        if (res.versions[carton.version_id]) {
+          categories = res.versions[carton.version_id];
+        } else {
+          let id_default = res.versions.find((ver) => ver.nom === "default");
+          categories = res.versions[id_default];
+        }
+        delete categories.nom;
+        delete categories._id;
+        delete res.versions;
+        cartons.push({ ...res, ...categories });
+      }
     }
-    delete categories.nom;
-    delete categories._id;
-    delete res.versions;
-    cartons.push({ ...res, ...categories });
+    return cartons;
+  } catch (err) {
+    return Promise.reject(err);
   }
-  return cartons;
 }
 
 // Ajoute un nouveau carton
@@ -143,15 +153,16 @@ async function getSousCartonsFlat(carton_id) {
   let sous_cartons_flat = [];
   try {
     let carton = await Carton.findById(carton_id);
-    carton.versions.forEach((v) => {
-      ["quoi", "comment", "fonction", "exemples", "plus_loin"].forEach(
-        (cat) => {
-          v[cat].sous_cartons.forEach((sous_carton) =>
-            sous_cartons_flat.push(sous_carton.carton_id)
-          );
-        }
-      );
-    });
+    if (carton.versions.length)
+      carton.versions.forEach((v) => {
+        ["quoi", "comment", "fonction", "exemples", "plus_loin"].forEach(
+          (cat) => {
+            v[cat].sous_cartons.forEach((sous_carton) =>
+              sous_cartons_flat.push(sous_carton.carton_id)
+            );
+          }
+        );
+      });
   } catch (err) {
     console.log(err);
     return Promise.reject();
