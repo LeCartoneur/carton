@@ -14,15 +14,40 @@
   versions: [
     {
       nom: String,
-      quoi_texte: "",
-      quoi_cartons: [ObjectId],
-      fonction_texte: "",
-      fonction_cartons: [ObjectId],
-      comment_texte: "",
-      comment_cartons: [ObjectId],
-      exemples_texte: "",
-      exemples_cartons: [ObjectId],
-      plus_loin_cartons: [ObjectId],
+      quoi: {
+        texte: String,
+        sous_cartons: [{
+          carton_id: ObjectId,
+          version_id: Number
+        }]
+      },
+      fonction: {
+        texte: String,
+        sous_cartons: [{
+          carton_id: ObjectId,
+          version_id: Number
+        }]
+      },
+      comment: {
+        texte: String,
+        sous_cartons: [{
+          carton_id: ObjectId,
+          version_id: Number
+        }]
+      },
+      exemples: {
+        texte: String,
+        sous_cartons: [{
+          carton_id: ObjectId,
+          version_id: Number
+        }]
+      },
+      plus_loin: {
+        sous_cartons: [{
+          carton_id: ObjectId,
+          version_id: Number
+        }]
+      },
     },
   ]
 }
@@ -32,25 +57,55 @@
 
 Un Carton originel est un carton sans carton parent.
 
-`GET: /cartons/list`
+- Route : `GET: /cartons/list`
+- Response : `application/json` la liste des cartons originels.
 
-## Récupérer un carton en particulier
+## Récupérer un carton par son id
 
-`POST: /cartons/get`
+- Route : `POST: /cartons/get`
+- Body : `application/json`
 
-Avec un body `application/json {id, sous_cartons: Bool}`. L'option `sous_cartons` permet de retourner les sous-cartons en tant qu'objets, sinon c'est les ids qui sont retournés.
+```javascript
+{
+  id,
+  sous_cartons: Boolean
+}
+```
+
+- L'option `sous_cartons` permet de retourner les sous-cartons en tant qu'objets, sinon c'est leurs ids qui sont retournés.
+
+- Response : `application/json` le carton souhaité en tant qu'objet.
 
 ## Ajouter un nouveau carton
 
-`POST: /cartons/add`
-
-Avec un body `application/json {carton}`
+- Route : `POST: /cartons/add`
+- Body : `application/json` avec le nouveau carton.
 
 ## Modifier un carton existant
 
-`POST: /cartons/update`
+- Route : `POST: /cartons/update`
+- Body `application/json`
 
-Avec un body `application/json {id, update: {name: 'Nouveau nom', ...}}`
+```javascript
+{
+  carton_id: 'id',
+  updates: [
+    {
+      path: 'nom',
+      value: 'Nouveau nom',
+      operation: 'set',
+    },
+    {
+      path: 'versions.[0].quoi.sous_cartons',
+      value: { carton_id: 'id', version_id: 0 },
+      operation: 'push',
+    },
+  ],
+}
+```
+
+- Le path suit la [dot notation](https://docs.mongodb.com/manual/core/document/#document-dot-notation) de MongoDB.
+- Operation peut être `set` pour remplacer le contenu d'une variable ou `push` pour ajouter à un array.
 
 ## Modifier le texte d'une catégorie d'un carton existant
 
@@ -69,7 +124,7 @@ Avec un body `application/json {id, update: {name: 'Nouveau nom', ...}}`
 ## Ajouter un sous-carton à la catégorie d'un carton
 
 - Route : `POST /cartons/update/sous_carton`
-- Body : application/json
+- Body : `application/json`
 
 ```javascript
 {
@@ -83,5 +138,12 @@ Avec un body `application/json {id, update: {name: 'Nouveau nom', ...}}`
 ## Réinitialiser la base
 
 - Route : `DELETE /cartons/reset`
-- Body : `application/json {mdp: RESET_KEY}`
+- Body : `application/json`
+
+```javascript
+{
+  mdp: RESET_KEY;
+}
+```
+
 - Response : 205 en cas de succès.
