@@ -79,7 +79,7 @@ router.post("/add", async (req, res) => {
 // Met à jour un carton existant
 router.post("/update", async (req, res) => {
   try {
-    const operations = ["push", "set"];
+    const operations = ["push", "set", "pull"];
     await Promise.all(
       req.body.updates.map((update) => {
         if (operations.includes(update.operation)) {

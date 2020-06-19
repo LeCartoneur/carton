@@ -105,12 +105,19 @@ Un Carton originel est un carton sans carton parent.
       value: { carton_id: 'id', version_id: 0 },
       operation: 'push',
     },
+    {
+      operation: "pull",
+      path: "versions.0.comment.sous_cartons",
+      value: {
+        carton_id: "sous_carton_id"
+      }
+    }
   ],
 }
 ```
 
 - Le path suit la [dot notation](https://docs.mongodb.com/manual/core/document/#document-dot-notation) de MongoDB.
-- Operation peut être `set` pour remplacer le contenu d'une variable ou `push` pour ajouter à un array.
+- Operation peut être `set` pour remplacer le contenu d'une variable, `push` pour ajouter à la fin d'un array et `pull` pour supprimer un élement d'un array suivant une condition.
 
 ## Supprimer un carton par son id
 
