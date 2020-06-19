@@ -21,8 +21,7 @@
 export default {
   data() {
     return {
-      api_url: 'https://api.carton.combiendecarbone.fr/',
-      //api_url: 'http://localhost:8000/',
+      api_url: process.env.VUE_APP_API_URL,
       cartons_originels: [],
       carton: {},
       carton_version: 0,
