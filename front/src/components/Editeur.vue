@@ -216,7 +216,7 @@ export default {
             )
         )
         this.postTexteUpdate(cartons)
-        // TODO: reload the carton after a successful update
+        this.$emit('reload')
       }
     },
   },

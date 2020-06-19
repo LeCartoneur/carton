@@ -10,7 +10,7 @@
       :parent_id="parent_id"
       :category="category"
       :data="data"
-      @reload="reloadCarton"
+      @reload="reload"
     />
 
     <div v-else>
@@ -114,8 +114,8 @@ export default {
     changeCarton(carton_id) {
       this.$emit('change-carton', carton_id)
     },
-    reloadCarton() {
-      this.$emit('change-carton', this.parent_id)
+    reload() {
+      this.$emit('reload')
     },
   },
 }

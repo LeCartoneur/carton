@@ -17,6 +17,7 @@
         :editor="mode_actif === 1"
         @toggle-reduced="toggleVolet(volet)"
         @change-carton="(id) => goToCarton(id)"
+        @reload="reload"
       ></volet>
     </div>
   </div>
@@ -94,6 +95,10 @@ export default {
     },
     goToCarton(id) {
       this.$router.push({ path: `/visionneuse/${id}` })
+    },
+    reload() {
+      this.loadCarton()
+      this.mode_actif = 0
     },
   },
   mounted() {
