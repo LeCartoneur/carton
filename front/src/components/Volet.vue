@@ -11,21 +11,23 @@
       :category="category"
       :data="data"
       @reload="reload"
+      style="grid-row: 2/4;"
     />
 
-    <div v-else>
-      <visionneuse-texte
-        :raw_txt="data.texte"
-        :sous_cartons="data.sous_cartons"
-        class="volet-texte"
-        @open-sous-carton="(id) => openSousCarton(id)"
-      />
-      <visionneuse-sous-carton
-        v-if="is_open_sous_carton"
-        :carton="sous_carton"
-        @change-carton="(id) => changeCarton(id)"
-      />
-    </div>
+    <visionneuse-texte
+      v-if="!editor"
+      :raw_txt="data.texte"
+      :sous_cartons="data.sous_cartons"
+      class="volet-texte"
+      @open-sous-carton="(id) => openSousCarton(id)"
+      style="grid-row: 2;"
+    />
+    <visionneuse-sous-carton
+      v-if="!editor && is_open_sous_carton"
+      :carton="sous_carton"
+      @change-carton="(id) => changeCarton(id)"
+      style="grid-row: 4;"
+    />
   </div>
 
   <div v-else :style="volet" class="tranche" @click="toggleVolet">
