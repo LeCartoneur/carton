@@ -39,8 +39,7 @@ export default {
   },
   data() {
     return {
-      //api_url: 'http://localhost:8000/',
-      api_url: 'https://api.carton.combiendecarbone.fr/',
+      api_url: process.env.VUE_APP_API_URL,
       txt_edit: fmtTxtDb2Edit(this.data.texte, this.data.sous_cartons),
       new_sous_cartons: [],
       del_sous_cartons: [],
