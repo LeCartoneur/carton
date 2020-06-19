@@ -1,9 +1,17 @@
 <template>
   <div>
     <h4>Texte du carton</h4>
-    <textarea rows="10" cols="30" spellcheck="true" :value="value" @input="update" />
+    <textarea
+      rows="10"
+      cols="30"
+      spellcheck="true"
+      style="resize: vertical;"
+      :value="value"
+      @input="update"
+    />
     <p class="error" v-if="refs_no_cartons.length > 0">
-      Les références {{ refs_no_cartons.join(', ') }} n'ont pas de cartons qui leur font référence.
+      Les références {{ refs_no_cartons.join(', ') }} n'ont pas de cartons qui
+      leur font référence.
     </p>
   </div>
 </template>
