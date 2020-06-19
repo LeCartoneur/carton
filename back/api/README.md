@@ -112,6 +112,19 @@ Un Carton originel est un carton sans carton parent.
 - Le path suit la [dot notation](https://docs.mongodb.com/manual/core/document/#document-dot-notation) de MongoDB.
 - Operation peut être `set` pour remplacer le contenu d'une variable ou `push` pour ajouter à un array.
 
+## Supprimer un carton par son id
+
+- Route : `POST: /cartons/get`
+- Body : `application/json`
+
+```javascript
+{
+  id,
+}
+```
+
+Tous les sous-cartons du carton seront supprimés de manière récursive.
+
 ## Modifier le texte d'une catégorie d'un carton existant
 
 - Route : `POST /cartons/update/text`

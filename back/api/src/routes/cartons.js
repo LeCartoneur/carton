@@ -100,6 +100,66 @@ router.post("/update", async (req, res) => {
   }
 });
 
+// Delete a carton given its id. Recursively delete its sous-carton.
+router.delete("/delete", async (req, res) => {
+  // TODO: ajouter vérification user === carton.user
+  // TODO: faire les suppressions au sein d'une transaction
+  // https://mongoosejs.com/docs/transactions.html
+  try {
+    await deleteSousCartons(req.body.id);
+  } catch (err) {
+    res.status(400).send(err);
+  } finally {
+    res.end();
+  }
+});
+
+/**
+ * Recursively delete the sous-cartons of a carton
+ * @param {Mongoose.ObjectId} carton_id Valid carton id
+ */
+async function deleteSousCartons(carton_id) {
+  try {
+    const sous_cartons = await getSousCartonsFlat(carton_id);
+    await Promise.all(
+      sous_cartons.map((sous_carton_id) => {
+        deleteSousCartons(sous_carton_id);
+      })
+    );
+    await Carton.findByIdAndDelete(carton_id);
+  } catch (err) {
+    return Promise.reject(err);
+  } finally {
+    return Promise.resolve();
+  }
+}
+
+/**
+ * Return a flat list of all sous-cartons ids from all categories of
+ * a given carton.
+ * @param {Mongoose.ObjectId} carton_id Valid carton id
+ */
+async function getSousCartonsFlat(carton_id) {
+  let sous_cartons_flat = [];
+  try {
+    let carton = await Carton.findById(carton_id);
+    carton.versions.forEach((v) => {
+      ["quoi", "comment", "fonction", "exemples", "plus_loin"].forEach(
+        (cat) => {
+          v[cat].sous_cartons.forEach((sous_carton) =>
+            sous_cartons_flat.push(sous_carton.carton_id)
+          );
+        }
+      );
+    });
+  } catch (err) {
+    console.log(err);
+    return Promise.reject();
+  } finally {
+    return Promise.resolve(sous_cartons_flat);
+  }
+}
+
 // Met à jour le texte d'une catégorie d'un carton existant
 router.post("/update/text", (req, res) => {
   let path = `versions.${req.body.version}.${req.body.cat}.texte`;
