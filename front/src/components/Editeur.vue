@@ -9,6 +9,7 @@
       :sous_cartons_noms="sous_cartons_noms"
       :cartons_no_refs="cartons_no_refs"
       @add-sous-carton="(e) => addSousCartons(e)"
+      @del-sous-carton="(e) => delSousCartons(e)"
     />
     <button @click="update">Save</button>
   </div>
@@ -42,17 +43,34 @@ export default {
       api_url: 'https://api.carton.combiendecarbone.fr/',
       txt_edit: fmtTxtDb2Edit(this.data.texte, this.data.sous_cartons),
       new_sous_cartons: [],
+      del_sous_cartons: [],
       refs_no_cartons: [],
       cartons_no_refs: [],
     }
   },
   computed: {
+    /**
+     * Holds all the current sous-cartons names, i.e. names =
+     *    sous_cartons in DB
+     *    + new_sous_cartons
+     *    - del_sous_cartons
+     */
     sous_cartons_noms() {
       let noms = []
       this.data.sous_cartons.forEach((carton) => noms.push(carton.nom))
       this.new_sous_cartons.forEach((carton) => noms.push(carton.nom))
+      this.del_sous_cartons.forEach((carton) => {
+        let idx = noms.findIndex((item) => item === carton.nom)
+        if (idx > -1) noms.splice(idx, 1)
+      })
       return noms
     },
+    /**
+     * The volet is ready, i.e. user's modifications can be pushed to
+     * the DB, if there is no sous-cartons with no references in the text
+     * and if there is no references in the text with no matching sous-cartons.
+     * Based on the results from checkSousCartonsRefs().
+     */
     update_ready() {
       return this.refs_no_cartons.length === 0 && this.cartons_no_refs.length === 0
     },
@@ -63,12 +81,29 @@ export default {
     },
   },
   methods: {
+    /**
+     * Add a new sous carton to the list of sous-cartons to be pushed into the DB.
+     */
     addSousCartons(new_name) {
       this.new_sous_cartons.push({ nom: new_name })
       this.checkSousCartonsRefs()
     },
     /**
-     * All references in the texte must reference an existing sous carton
+     * Remove a sous carton either by removing it from the list of the new sous-cartons
+     * if it has not been inserted into the DB yet, or by adding it to the list of
+     * sous-cartons to be removed from the DB.
+     */
+    delSousCartons(carton_nom) {
+      let idx = this.new_sous_cartons.findIndex((item) => item.nom === carton_nom)
+      if (idx > -1) {
+        this.new_sous_cartons.splice(idx, 1)
+      } else {
+        this.del_sous_cartons.push({ nom: carton_nom })
+      }
+      this.checkSousCartonsRefs()
+    },
+    /**
+     * All references in the text must reference an existing sous carton
      * and all sous cartons must be referenced by at least one link in the
      * text.
      */
@@ -93,6 +128,9 @@ export default {
         }
       })
     },
+    /**
+     * Wrapper to the API route 'cartons/add' to add a new carton to the DB.
+     */
     postNewCarton(nom) {
       return fetch(this.api_url + 'cartons/add', {
         method: 'POST',
@@ -113,6 +151,9 @@ export default {
           return body.id
         })
     },
+    /* deleteSousCarton(nom) {
+
+    }, */
     updateParentSousCartons(sous_cartons_id) {
       return fetch(this.api_url + 'cartons/update/sous_cartons', {
         method: 'POST',
@@ -145,6 +186,13 @@ export default {
         return response.status === 200
       })
     },
+    /**
+     * Process all the necessary updates made in the editor and their
+     * corresponding API calls.
+     * 1/ Delete any sous-cartons from the sous_cartons list,
+     * 2/ Add any new sous-cartons to the sous_cartons list,
+     * 3/ Update the category text
+     */
     async update() {
       if (this.update_ready) {
         let cartons = this.data.sous_cartons.map((carton) => {

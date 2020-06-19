@@ -8,6 +8,7 @@
         <span :class="{ error: cartons_no_refs.includes(nom) }">
           {{ nom }}
         </span>
+        <button @click="delSousCarton(nom)">X</button>
       </li>
     </ul>
   </div>
@@ -34,6 +35,15 @@ export default {
     addSousCarton() {
       if (!this.sous_cartons_noms.includes(this.new_carton)) {
         this.$emit('add-sous-carton', this.new_carton)
+        this.new_carton = ''
+      } else {
+        // TODO: message d'erreur si on essaie d'insérer un carton dont le
+        // nom existe déjà
+      }
+    },
+    delSousCarton(nom) {
+      if (this.sous_cartons_noms.includes(nom)) {
+        this.$emit('del-sous-carton', nom)
       }
     },
   },
