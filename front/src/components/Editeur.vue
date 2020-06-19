@@ -131,12 +131,10 @@ export default {
     /**
      * Wrapper to the API route 'cartons/add' to add a new carton to the DB.
      */
-    postNewCarton(nom) {
-      return fetch(this.api_url + 'cartons/add', {
+    async postNewCarton(nom) {
+      let res = await fetch(this.api_url + 'cartons/add', {
         method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-        },
+        headers: { 'content-type': 'application/json' },
         body: JSON.stringify({
           nom: nom,
           parent: this.parent_id,
@@ -144,16 +142,20 @@ export default {
           user: 'exemple',
         }),
       })
-        .then((response) => {
-          return response.json()
-        })
-        .then((body) => {
-          return body.id
-        })
+      let body = await res.json()
+      return body.id
     },
-    /* deleteSousCarton(nom) {
-
-    }, */
+    /**
+     * Wrapper to the API route 'cartons/delete' to remove a carton from the DB.
+     */
+    async deleteSousCarton(carton_id) {
+      let res = await fetch(this.api_url + 'cartons/add', {
+        method: 'DELETE',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: carton_id }),
+      })
+      return res.status === 200 ? Promise.resolve() : Promise.reject()
+    },
     updateParentSousCartons(sous_cartons_id) {
       return fetch(this.api_url + 'cartons/update/sous_cartons', {
         method: 'POST',
@@ -199,13 +201,23 @@ export default {
           return { nom: carton.nom, _id: carton._id }
         })
         await Promise.all(
-          this.new_sous_cartons.map(async (carton) => {
-            let id = await this.postNewCarton(carton.nom)
-            cartons.push({ nom: carton.nom, _id: id })
-            this.updateParentSousCartons(id)
-          })
+          this.new_sous_cartons
+            .map(async (carton) => {
+              let id = await this.postNewCarton(carton.nom)
+              cartons.push({ nom: carton.nom, _id: id })
+              this.updateParentSousCartons(id)
+            })
+            .concat(
+              this.del_sous_cartons.map(async (carton) => {
+                this.deleteSousCarton(carton.id)
+                let idx = cartons.findIndex((c) => c._id === carton.id)
+                if (idx > -1) cartons.splice(idx, 1)
+                // TODO: on success must update the parent's sous-cartons list
+              })
+            )
         )
         this.postTexteUpdate(cartons)
+        // TODO: reload the carton after a successful update
       }
     },
   },
