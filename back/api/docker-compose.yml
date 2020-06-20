@@ -1,11 +1,21 @@
 version: "3"
 services:
   api:
-    restart: always
     build: .
+    image: api
+    command: npm start
+    restart: always
     env_file:
       - api.env
     ports:
       - 8000:8000
+  api-tests:
+    image: api
+    command: dockerize
+      -wait tcp://mongo:27017 -wait tcp://api:8000 -timeout 10s
+      bash -c "npm test"
+    depends_on:
+      - api
+      - mongo
   mongo:
     image: mongo
