@@ -14,6 +14,8 @@ services:
     command: dockerize
       -wait tcp://mongo:27017 -wait tcp://api:8000 -timeout 10s
       bash -c "npm test"
+    environment:
+      - API_URL=http://api:8000
     depends_on:
       - api
       - mongo
