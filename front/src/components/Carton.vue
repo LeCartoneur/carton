@@ -92,6 +92,7 @@ export default {
     },
     updateMode(id) {
       this.mode_actif = id
+      this.loadVolets()
     },
     goToCarton(id) {
       this.$router.push({ path: `/visionneuse/${id}` })
