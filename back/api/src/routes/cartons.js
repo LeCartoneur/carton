@@ -82,7 +82,7 @@ async function getSubCartons(list) {
 router.post("/add", async (req, res) => {
   const carton = new Carton(req.body);
   await carton.save().then((doc) => {
-    res.json({ id: doc._id });
+    res.status(201).json({ id: doc._id });
   });
 });
 
