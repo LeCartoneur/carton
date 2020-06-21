@@ -5,12 +5,15 @@
       :key="txt.txt"
       @click="callbackSousCartonText(txt)"
       :class="{ txt_link: txt.interact }"
-      >{{ txt.txt }}</span
     >
+      {{ txt.txt }}
+    </span>
   </p>
 </template>
 
 <script>
+import { splitTxt } from '../plugins/formatTexte.js'
+
 export default {
   props: {
     raw_txt: {
@@ -24,33 +27,7 @@ export default {
   },
   computed: {
     fmt_txt() {
-      let fmt_txt = []
-      if (this.raw_txt) {
-        const regex = /{([^}]+)}\(([^}]+)\)/g
-        let res,
-          start_index = 0
-        while ((res = regex.exec(this.raw_txt)) !== null) {
-          if (start_index !== res.index) {
-            fmt_txt.push({
-              txt: this.raw_txt.slice(start_index, res.index),
-              interact: false,
-            })
-          }
-          fmt_txt.push({
-            txt: res[2] ? res[2] : this.sous_cartons.find((carton) => carton._id === res[1]).nom,
-            interact: true,
-            id: res[1],
-          })
-          start_index = regex.lastIndex
-        }
-        if (start_index !== this.raw_txt.length) {
-          fmt_txt.push({
-            txt: this.raw_txt.slice(start_index, this.raw_txt.length),
-            interact: false,
-          })
-        }
-      }
-      return fmt_txt
+      return splitTxt(this.raw_txt)
     },
   },
   methods: {

@@ -6,6 +6,8 @@
 </template>
 
 <script>
+import { splitTxt } from '../plugins/formatTexte.js'
+
 export default {
   props: {
     carton: {
@@ -15,7 +17,9 @@ export default {
   },
   computed: {
     description() {
-      return this.carton.fonction.texte ? this.carton.fonction.texte : 'Pas de texte.'
+      return splitTxt(this.carton.fonction.texte ? this.carton.fonction.texte : 'Pas de texte.')
+        .map((txt) => txt.txt)
+        .join('')
     },
   },
   methods: {
