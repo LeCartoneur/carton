@@ -1,8 +1,18 @@
 <template>
   <div>
     <h4>Sous-cartons disponibles</h4>
-    <input type="text" v-model="new_carton" placeholder="Nouveau carton" />
-    <button @click="addSousCarton">Ajouter un sous-carton</button>
+    <div style="display: flex; flex-direction: column; align-items: center;">
+      <input
+        type="text"
+        :value="new_carton"
+        @input="validateSousCarton"
+        placeholder="Nouveau carton"
+      />
+      <span v-if="new_carton_err !== ''" class="error">
+        {{ new_carton_err }}
+      </span>
+      <button @click="addSousCarton">Ajouter un sous-carton</button>
+    </div>
     <ul>
       <li v-for="nom in sous_cartons_noms" :key="nom">
         <span :class="{ error: cartons_no_refs.includes(nom) }">
@@ -29,16 +39,30 @@ export default {
   data() {
     return {
       new_carton: '',
+      new_carton_err: '',
     }
   },
   methods: {
     addSousCarton() {
-      if (!this.sous_cartons_noms.includes(this.new_carton)) {
-        this.$emit('add-sous-carton', this.new_carton)
+      this.validateSousCarton()
+      let new_carton_trim = this.new_carton.trim()
+      if (this.new_carton_err === '') {
+        this.$emit('add-sous-carton', new_carton_trim)
         this.new_carton = ''
+      }
+    },
+    validateSousCarton(e) {
+      if (e) this.new_carton = e.target.value
+      let new_carton_trim = this.new_carton.trim()
+      if (this.sous_cartons_noms.includes(new_carton_trim)) {
+        this.new_carton_err = 'Ce carton existe déjà'
+        return
+      } else if (new_carton_trim === '') {
+        this.new_carton_err = 'Veuillez entrer une valeur'
+        return
       } else {
-        // TODO: message d'erreur si on essaie d'insérer un carton dont le
-        // nom existe déjà
+        this.new_carton_err = ''
+        return
       }
     },
     delSousCarton(nom) {
