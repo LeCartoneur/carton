@@ -17,8 +17,14 @@
         :editor="mode_actif === 1"
         @toggle-reduced="toggleVolet(volet)"
         @change-carton="(id) => goToCarton(id)"
-        @reload="reload"
+        @update-ready="(updates) => saveUpdates(volet.cat, updates)"
       ></volet>
+      <editeur
+        v-if="mode_actif === 1"
+        :updates="updates_flat"
+        :carton="carton_flat"
+        @reload="reload"
+      />
     </div>
   </div>
 </template>
@@ -26,9 +32,10 @@
 <script>
 import Volet from './Volet.vue'
 import Toolbar from './Toolbar.vue'
+import Editeur from './Editeur.vue'
 
 export default {
-  components: { Volet, Toolbar },
+  components: { Volet, Toolbar, Editeur },
   props: {
     carton_id: {
       required: true,
@@ -42,6 +49,7 @@ export default {
       carton_ready: false,
       mode_actif: 0, //0: Visionneuse ||1: Editeuse ||2: Commenteuse
       volets: [],
+      updates: {},
     }
   },
   computed: {
@@ -50,6 +58,41 @@ export default {
     },
     parent() {
       return this.carton.parent ? this.carton.parent : false
+    },
+    /**
+     * Remove the versions key and replace it with the content of the
+     * desired version. Should be removed when the 'flatten' option
+     * will be implemented in the route cartons/get.
+     */
+    carton_flat() {
+      let carton = JSON.parse(JSON.stringify(this.carton))
+      let carton_flat = {}
+      const version_id = 0
+      if (carton) {
+        let categories = {}
+        if (carton.versions[version_id]) {
+          categories = carton.versions[version_id]
+        } else {
+          let id_default = carton.versions.find((ver) => ver.nom === 'default')
+          categories = carton.versions[id_default]
+        }
+        delete categories.nom
+        delete categories._id
+        delete carton.versions
+        carton_flat = { ...carton, ...categories }
+      }
+      return carton_flat
+    },
+    /**
+     * Flatten the updates object as a single layer array. Dedicated keys were
+     * necessary only to selectively set updates from different sources.
+     */
+    updates_flat() {
+      let updates_flat = []
+      for (const cat in this.updates) {
+        updates_flat = updates_flat.concat(this.updates[cat])
+      }
+      return updates_flat
     },
   },
   methods: {
@@ -100,6 +143,9 @@ export default {
     reload() {
       this.loadCarton()
       this.mode_actif = 0
+    },
+    saveUpdates(key, updates) {
+      this.$set(this.updates, key, updates)
     },
   },
   mounted() {

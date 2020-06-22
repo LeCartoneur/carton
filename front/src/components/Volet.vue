@@ -5,13 +5,14 @@
       {{ config.titre }}
     </h2>
 
-    <editeur
+    <editeur-volet
       v-if="editor"
       :parent_id="parent_id"
       :category="category"
       :data="data"
       @reload="reload"
       style="grid-row: 2/4;"
+      @update-ready="(updates) => sendUpdates(updates)"
     />
 
     <visionneuse-texte
@@ -39,7 +40,7 @@
 <script>
 import VisionneuseSousCarton from './VisionneuseSousCarton.vue'
 import VisionneuseTexte from './VisionneuseTexte.vue'
-import Editeur from './Editeur.vue'
+import EditeurVolet from './EditeurVolet.vue'
 
 const configs = {
   quoi: {
@@ -60,7 +61,7 @@ export default {
   components: {
     VisionneuseSousCarton,
     VisionneuseTexte,
-    Editeur,
+    EditeurVolet,
   },
   // TODO: use correct Vue.js props definition/syntax
   props: {
@@ -118,6 +119,9 @@ export default {
     },
     reload() {
       this.$emit('reload')
+    },
+    sendUpdates(updates) {
+      this.$emit('update-ready', updates)
     },
   },
 }
