@@ -99,7 +99,7 @@ router.post("/update", async (req, res) => {
             },
           });
         } else {
-          return Promise.resolve();
+          return Promise.reject("Error: operation not specified");
         }
       })
     );
