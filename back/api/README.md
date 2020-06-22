@@ -132,34 +132,6 @@ Un Carton originel est un carton sans carton parent.
 
 Tous les sous-cartons du carton seront supprimés de manière récursive.
 
-## Modifier le texte d'une catégorie d'un carton existant
-
-- Route : `POST /cartons/update/text`
-- Body : application/json
-
-```javascript
-{
-  id: "carton_id",
-  version: "version_id",
-  cat: "quoi|fonction|comment|exemples",
-  txt: "nouveau texte"
-}
-```
-
-## Ajouter un sous-carton à la catégorie d'un carton
-
-- Route : `POST /cartons/update/sous_carton`
-- Body : `application/json`
-
-```javascript
-{
-  id: "carton_id",
-  version: "version_id",
-  cat: "quoi|fonction|comment|exemples",
-  carton: {carton_id, version: 0}
-}
-```
-
 ## Réinitialiser la base
 
 - Route : `DELETE /cartons/reset`

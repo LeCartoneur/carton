@@ -171,42 +171,6 @@ async function getSousCartonsFlat(carton_id) {
   }
 }
 
-// Met à jour le texte d'une catégorie d'un carton existant
-router.post("/update/text", (req, res) => {
-  let path = `versions.${req.body.version}.${req.body.cat}.texte`;
-  Carton.findByIdAndUpdate(
-    req.body.id,
-    {
-      $set: { [path]: req.body.txt },
-    },
-    (err, doc) => {
-      if (err) {
-        res.status(400).end();
-      } else {
-        res.end();
-      }
-    }
-  );
-});
-
-// Ajout un sous-carton à la liste des sous cartons d'un carton
-router.post("/update/sous_cartons", (req, res) => {
-  let path = `versions.${req.body.version}.${req.body.cat}.sous_cartons`;
-  Carton.findByIdAndUpdate(
-    req.body.id,
-    {
-      $push: { [path]: req.body.carton },
-    },
-    (err, doc) => {
-      if (err) {
-        res.status(400).end();
-      } else {
-        res.end();
-      }
-    }
-  );
-});
-
 // Si on est dans l'alpha, la route supprime les cartons existants
 // et insère des dummy cartons dans la base vide.
 if (process.env.ALPHA === "true") {
