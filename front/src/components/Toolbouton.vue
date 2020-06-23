@@ -1,39 +1,43 @@
-/* prevoir une fct pour quand on clique sur le bouton déjà activé (animation)
- */
-
 <template>
-  <button
-    v-if="clickable && !active"
-    class="left-tool-button clickable"
-    @click="activate()"
-  >{{name.charAt(0).toUpperCase()}}</button>
-  <button v-else-if="active" class="left-tool-button active">{{name.charAt(0).toUpperCase()}}</button>
-  <button v-else class="left-tool-button unclickable" disabled>{{name.charAt(0).toUpperCase()}}</button>
+  <!-- TODO: prevoir une fct pour quand on clique sur le bouton déjà activé (animation) -->
+  <button :class="style_class" @click="activate()">
+    {{ name.charAt(0).toUpperCase() }}
+  </button>
 </template>
 
 <script>
 export default {
   props: {
-        name: {
-        type: String,
-        required: true,
-        },
-        clickable: {
-        type: Boolean,
-        default: false,
-        },
-        active: {
-        type: Boolean,
-        default: false,
-        },
+    name: {
+      type: String,
+      required: true,
     },
-    methods:{
-        activate() {
-          if(!this.active){
-            this.$emit('button-click');
-          }
+    clickable: {
+      type: Boolean,
+      default: false,
     },
-    }
+    active: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  computed: {
+    style_class() {
+      return {
+        'left-tool-button': true,
+        clickable: this.clickable && !this.active,
+        active: this.active,
+        unclickable: !this.clickable,
+      }
+    },
+  },
+  methods: {
+    activate() {
+      if (!this.active) {
+        this.$emit('button-click')
+      }
+    },
+  },
 }
 </script>
 
