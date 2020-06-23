@@ -13,50 +13,41 @@
 </template>
 
 <script>
-
 import Toolbouton from './Toolbouton.vue'
 
 export default {
-  components: { Toolbouton},
-  data() {
-      return {
-      buttons: [],
-    }
-  },
+  components: { Toolbouton },
   props: {
     mode_actif: {
-        type: Number,
-        required: true,
-        default: 0,
-        },
+      type: Number,
+      required: true,
+    },
+  },
+  computed: {
+    buttons: {
+      get() {
+        let buttons = this.getButtons()
+        buttons.forEach((button) => {
+          button.active = button.id === this.mode_actif
+        })
+        return buttons
+      },
+      set(button_id) {
+        this.$emit('mode-update', button_id)
+      },
+    },
   },
   methods: {
     select(selected) {
-      if(selected.name !== this.buttons[this.mode_actif].name)
-      {
-        for(const [i, cur_butt] of this.buttons.entries()){
-          if(cur_butt.active)
-          {
-            cur_butt.active = false;
-          }
-          else if(cur_butt.name === selected.name){
-            this.$emit('mode-update', i);
-          }
-        }
-
-        selected.active = true;
-        
-      }
+      this.buttons = this.buttons.findIndex((button) => button.id === selected.id)
     },
-    createButtonList(){
-        for (let name of ['visionneuse', 'editeuse', 'commenteuse']) {
-            this.buttons.push({ name: name, active: false , clickable: true})
-        }
-        this.buttons[this.mode_actif].active = true;
-    }
-  },
-  mounted() {
-    this.createButtonList();
+    getButtons() {
+      return [
+        { name: 'visionneuse', id: 0, active: true, clickable: true },
+        { name: 'editeuse', id: 1, active: false, clickable: true },
+        { name: 'commenteuse', id: 2, active: false, clickable: true },
+      ]
+    },
   },
 }
 </script>
