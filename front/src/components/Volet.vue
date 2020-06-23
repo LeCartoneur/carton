@@ -63,7 +63,6 @@ export default {
     VisionneuseTexte,
     EditeurVolet,
   },
-  // TODO: use correct Vue.js props definition/syntax
   props: {
     category: {
       type: String,
@@ -106,6 +105,12 @@ export default {
       `
     },
   },
+  watch: {
+    data() {
+      this.is_open_sous_carton = false
+      this.sous_carton = {}
+    },
+  },
   methods: {
     openSousCarton(id) {
       this.is_open_sous_carton = true
@@ -116,6 +121,8 @@ export default {
     },
     changeCarton(carton_id) {
       this.$emit('change-carton', carton_id)
+      this.sous_carton = {}
+      this.is_open_sous_carton = false
     },
     reload() {
       this.$emit('reload')

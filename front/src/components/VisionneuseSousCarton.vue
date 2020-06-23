@@ -17,9 +17,11 @@ export default {
   },
   computed: {
     description() {
-      return splitTxt(this.carton.fonction.texte ? this.carton.fonction.texte : 'Pas de texte.')
-        .map((txt) => txt.txt)
-        .join('')
+      if (this.carton.fonction) {
+        return splitTxt(this.carton.fonction.texte ? this.carton.fonction.texte : 'Pas de texte.')
+          .map((txt) => txt.txt)
+          .join('')
+      } else return ''
     },
   },
   methods: {
