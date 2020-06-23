@@ -152,7 +152,7 @@ export default {
 
       updates.push({
         category: this.category,
-        operation: 'set',
+        operation: 'update_txt',
         path: `versions[0].${this.category}.texte`,
         value: this.txt_edit,
       })

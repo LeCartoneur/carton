@@ -26,7 +26,7 @@ export default {
      * Order the updates by operations.
      */
     updates_ordered() {
-      let updates_ordered = { add: [], delete: [], set: [] }
+      let updates_ordered = { add: [], delete: [], update_txt: [], set: [] }
       this.updates.forEach((update) => {
         updates_ordered[update.operation].push(update)
       })
@@ -115,6 +115,11 @@ export default {
         })
       } else return false
     },
+    /**
+     * Wrapper around the cartons/update route, specifically to update
+     * the text of a carton's category (as the text must be format
+     * with the updated ids of the sous-cartons).
+     */
     updateCategoryText(carton, carton_version_id, update) {
       return fetch(this.api_url + 'cartons/update', {
         method: 'POST',
@@ -126,8 +131,31 @@ export default {
           updates: [
             {
               path: `versions.${carton_version_id}.${update.category}.texte`,
-              operation: update.operation,
+              operation: 'set',
               value: fmtTxtEdit2Db(update.value, carton[update.category].sous_cartons),
+            },
+          ],
+        }),
+      }).then((response) => {
+        return response.status === 200
+      })
+    },
+    /**
+     * Wrapper around the cartons/update route for generic set updates.
+     */
+    updateItem(carton, update) {
+      return fetch(this.api_url + 'cartons/update', {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: carton._id,
+          updates: [
+            {
+              path: update.path,
+              operation: 'set',
+              value: update.value,
             },
           ],
         }),
@@ -165,8 +193,14 @@ export default {
         )
         // Update texts
         await Promise.all(
-          this.updates_ordered.set.map(async (update) => {
+          this.updates_ordered.update_txt.map(async (update) => {
             this.updateCategoryText(carton, 0, update)
+          })
+        )
+        // Generic set updates
+        await Promise.all(
+          this.updates_ordered.set.map(async (update) => {
+            this.updateItem(carton, update)
           })
         )
         // When everything is good, we can reload the carton

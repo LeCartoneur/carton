@@ -1,10 +1,17 @@
 <template>
   <div class="carton">
     <toolbar :mode_actif="mode_actif" @mode-update="(id) => updateMode(id)" />
-    <h1 class="nom">
+
+    <h1 class="nom" v-if="mode_actif !== 1">
       {{ carton.nom }}
       <span @click="goToCarton(parent)" v-if="parent">🔙</span>
     </h1>
+    <editeur-carton-titre
+      v-else
+      :carton_nom="carton.nom"
+      @update-ready="(update) => saveUpdates('nom', update)"
+    />
+
     <div class="volets-container">
       <volet
         v-for="volet in volets"
@@ -33,9 +40,10 @@
 import Volet from './Volet.vue'
 import Toolbar from './Toolbar.vue'
 import Editeur from './Editeur.vue'
+import EditeurCartonTitre from './EditeurCartonTitre.vue'
 
 export default {
-  components: { Volet, Toolbar, Editeur },
+  components: { Volet, Toolbar, Editeur, EditeurCartonTitre },
   props: {
     carton_id: {
       required: true,
