@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Carton = require("../Carton.model");
-const { populate } = require("../plugins/populate.js");
+const { generateCategories } = require("../plugins/populate.js");
 
 // Récupère la liste de tous les cartons originels
 router.get("/list", async (req, res) => {
@@ -177,7 +177,7 @@ if (process.env.ALPHA === "true") {
   router.post("/reset", async (req, res) => {
     if (req.body.mdp === process.env.RESET_KEY) {
       await Carton.deleteMany();
-      await populate();
+      await generateCategories();
       res.status(205).end();
     } else {
       res.status(404).end();

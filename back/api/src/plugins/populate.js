@@ -1,4 +1,16 @@
 const Carton = require("../Carton.model");
+const LoremIpsum = require("lorem-ipsum").LoremIpsum;
+
+const lorem = new LoremIpsum({
+  sentencesPerParagraph: {
+    max: 6,
+    min: 2,
+  },
+  wordsPerSentence: {
+    max: 16,
+    min: 4,
+  },
+});
 
 /**
  * Populate the database with dummy carton objects.
@@ -73,4 +85,149 @@ async function populate() {
   await Carton.findByIdAndUpdate(ordinateur_id, ordinateur);
 }
 
-module.exports = { populate };
+/**
+ * Generate the sous-cartons for each categories. Recursively add the
+ * sous-cartons for the added sous-cartons.
+ * @param {ObjectId} carton_id Id of the carton
+ * @param {Number} depth Current depth value
+ */
+async function generateCategories(carton_id, depth = 0) {
+  const max_depth = 5;
+  if (!carton_id) {
+    carton_id = (await createCarton()).carton_id;
+  }
+  const carton = await Carton.findById(carton_id);
+  // Generate sous-cartons for all categories
+  await Promise.all(
+    ["quoi", "fonction", "comment"].map(async (cat) => {
+      // Generate sous-cartons
+      let sous_cartons = getArrBySize(getRandomInt(max_depth - depth, 0));
+      await Promise.all(
+        sous_cartons.map(async (_, idx) => {
+          sous_cartons[idx] = await createCarton(carton_id);
+        })
+      );
+      // Update carton's sous_cartons list
+      carton.versions[0][cat].sous_cartons = sous_cartons.map((ssc) => {
+        return { carton_id: ssc.carton_id, version_id: 0 };
+      });
+
+      // Update carton's text description
+      carton.versions[0][cat].texte = generateText(sous_cartons);
+    })
+  );
+  // Save current carton
+  await carton.save();
+
+  // Generate categories for sous-cartons
+  await Promise.all(
+    ["quoi", "fonction", "comment"].map(async (cat) => {
+      carton.versions[0][cat].sous_cartons.map(async (ssc) => {
+        await generateCategories(ssc.carton_id, depth + 1);
+      });
+    })
+  );
+}
+
+/**
+ * Create a new carton attached to a given carton with a random name.
+ * @param {Number} parent_id Id of the parent carton. If not provided, create
+ * and originel carton.
+ */
+async function createCarton(parent_id = null) {
+  let carton = new Carton({ nom: getRandomMot(), parent: parent_id });
+  return carton.save().then((doc) => {
+    return { nom: doc.nom, carton_id: doc._id };
+  });
+}
+
+/**
+ * Generate a random text with links taken from the list of sous-cartons.
+ * @param {Array} sous_cartons Array of sous cartons
+ */
+function generateText(sous_cartons) {
+  let txt = lorem.generateParagraphs(2).split(" ");
+  let idx = [];
+  sous_cartons.forEach((ssc) => {
+    let id = getRandomInt(txt.length);
+    while (idx.includes(id)) {
+      id = getRandomInt(txt.length);
+    }
+    idx.push(id);
+    txt[id] = `{${ssc.carton_id}}(${ssc.nom})`;
+  });
+  return txt.join(" ");
+}
+
+/**
+ * Pick a random word from the list `mots`
+ */
+function getRandomMot() {
+  return mots[getRandomInt(mots.length - 1)];
+}
+
+/**
+ * Draw a random integer in [min_int, max_int]
+ * @param {Integer} max_int Max value
+ * @param {Integer} min_int Min value, 0 if not provided
+ */
+function getRandomInt(max_int, min_int = 0) {
+  return min_int + Math.floor(Math.random() * Math.floor(max_int - min_int));
+}
+
+/**
+ * Return an array with a given size.
+ * @param {Integer} length Size of the desired array
+ * @param {Number | String} value Default values for the array, default is 1
+ */
+function getArrBySize(length, value = 1) {
+  let arr = [];
+  for (let i = 0; i < length; i++) {
+    arr.push(value);
+  }
+  return arr;
+}
+
+const mots = [
+  "Selle",
+  "Interne",
+  "Escorte",
+  "Gros",
+  "Soulever",
+  "Jambon",
+  "Religion",
+  "Arrêter",
+  "Invitation",
+  "Alpinisme",
+  "Élevé",
+  "Charlatan",
+  "Prison",
+  "Berceau",
+  "Renard",
+  "Soufre",
+  "Larynx",
+  "Conceptuel",
+  "Robinet",
+  "Coffre",
+  "Civil",
+  "Déclarer",
+  "Plume",
+  "Veine",
+  "Inhaler",
+  "Annoter",
+  "Suisse",
+  "Rampant",
+  "Adhésif",
+  "Muletier",
+  "Tonne",
+  "Passeport",
+  "Escrime",
+  "Feuilleter",
+  "Motel",
+  "Petit déjeuner",
+  "Malheureux",
+  "Baignoire",
+  "Cocotte",
+];
+
+module.exports = { populate, generateCategories };
