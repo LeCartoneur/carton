@@ -1,11 +1,12 @@
 {
   "name": "back",
   "version": "0.1.0",
-  "description": "Base de données du projet Carton",
+  "description": "Base de données et API du projet Carton",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "mocha"
+    "test": "mocha",
+    "testd": "sudo docker-compose -f docker-compose.yml -f ./test/docker-compose.yml up --build --abort-on-container-exit"
   },
   "author": "thomas-god",
   "repository": {
