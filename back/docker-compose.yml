@@ -1,15 +1,5 @@
 version: "3"
 services:
-  api:
-    container_name: api
-    restart: always
-    build: ./api
-    command: npm start
-    env_file:
-      - ./api/api.env
-  mongo:
-    container_name: mongo
-    image: mongo
   webserver:
     image: nginx:mainline-alpine
     container_name: webserver
