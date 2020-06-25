@@ -17,6 +17,8 @@ services:
     restart: always
     volumes:
       - db_users:/data/db
+  redis_store:
+    image: redis
 
 volumes:
   db:
