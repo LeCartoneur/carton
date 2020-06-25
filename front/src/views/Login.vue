@@ -60,9 +60,7 @@ export default {
           .then((response) => {
             return response.json()
           })
-          .then((body) => {
-            console.log(body)
-          })
+          .then(() => {})
       }
     },
   },
