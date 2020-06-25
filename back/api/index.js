@@ -11,7 +11,7 @@ const app = express();
 app.use(
   cors({
     origin: [
-      "https://carton.netlify.app/",
+      "https://carton.netlify.app",
       "https://api.carton.combiendecarbone.fr",
     ],
     //origin: ["http://localhost:8000", "http://localhost:8080"],
