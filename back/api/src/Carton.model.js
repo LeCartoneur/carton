@@ -60,6 +60,4 @@ const cartonSchema = new mongoose.Schema({
   },
 });
 
-const Carton = mongoose.model("Carton", cartonSchema);
-
-module.exports = Carton;
+module.exports = cartonSchema;

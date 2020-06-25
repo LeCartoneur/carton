@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const Carton = require("../Carton.model");
+const { Carton } = require("../connection");
 const { generateCategories } = require("../plugins/populate.js");
 
 // Récupère la liste de tous les cartons originels

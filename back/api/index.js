@@ -1,4 +1,4 @@
-const connectDb = require("./src/connection");
+const { connDb, connDbUsers } = require("./src/connection.js");
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
@@ -11,8 +11,12 @@ app.use(express.json());
 app.use(morgan("common"));
 app.use("/cartons", cartons_routes);
 
-connectDb().then(() => {
+connDb.then(() => {
   console.log("Successful connection to db.");
+});
+
+connDbUsers.then(() => {
+  console.log("Successful connection to Users db.");
 });
 
 app.listen(port, () => {

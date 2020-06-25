@@ -1,4 +1,4 @@
-const Carton = require("../Carton.model");
+const { Carton } = require("../connection");
 const LoremIpsum = require("lorem-ipsum").LoremIpsum;
 
 const lorem = new LoremIpsum({

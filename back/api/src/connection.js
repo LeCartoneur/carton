@@ -1,14 +1,18 @@
 const mongoose = require("mongoose");
-const Carton = require("./Carton.model");
-const connection = process.env.MONGO_URL;
 
 mongoose.set("useFindAndModify", false);
 
-const connectDb = () => {
-  return mongoose.connect(connection, {
-    useUnifiedTopology: true,
-    useNewUrlParser: true,
-  });
-};
+const connDb = mongoose.createConnection(process.env.MONGO_URL, {
+  useUnifiedTopology: true,
+  useNewUrlParser: true,
+});
+const Carton = connDb.model("Carton", require("./Carton.model"));
 
-module.exports = connectDb;
+const connDbUsers = mongoose.createConnection(process.env.MONGO_URL_USERS, {
+  useUnifiedTopology: true,
+  useNewUrlParser: true,
+});
+const User = connDbUsers.model("User", require("./User.model.js"));
+const AlphaKey = connDbUsers.model("AlphaKey", require("./AlphaKey.model.js"));
+
+module.exports = { Carton, User, AlphaKey, connDb, connDbUsers };
