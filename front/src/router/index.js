@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Visionneuse from '../views/Visionneuse.vue'
-import Login from '../views/Login.vue'
+import SignIn from '../views/SignIn.vue'
 
 Vue.use(VueRouter)
 
@@ -26,9 +26,9 @@ const routes = [
     props: true,
   },
   {
-    path: '/login',
-    name: 'Login',
-    component: Login,
+    path: '/signin',
+    name: 'SignIn',
+    component: SignIn,
     props: true,
   },
 ]
