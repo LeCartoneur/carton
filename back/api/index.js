@@ -2,14 +2,15 @@ const { connDb, connDbUsers } = require("./src/connection.js");
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
-const cartons_routes = require("./src/routes/cartons");
 const port = process.env.PORT || 8000;
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 app.use(morgan("common"));
-app.use("/cartons", cartons_routes);
+app.use("/cartons", require("./src/routes/cartons"));
+app.use("/keys", require("./src/routes/keys"));
+app.use("/users", require("./src/routes/users"));
 
 connDb.then(() => {
   console.log("Successful connection to db.");
