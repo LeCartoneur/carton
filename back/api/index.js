@@ -10,7 +10,11 @@ const port = process.env.PORT || 8000;
 const app = express();
 app.use(
   cors({
-    origin: ["http://localhost:8000", "http://localhost:8080"],
+    origin: [
+      "https://carton.netlify.app/",
+      "https://api.carton.combiendecarbone.fr",
+    ],
+    //origin: ["http://localhost:8000", "http://localhost:8080"],
     allowedHeaders:
       "Origin, X-Requested-With, Content-Type, Accept, Authorization",
     credentials: true,
