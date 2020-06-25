@@ -34,6 +34,7 @@ export default {
     getCartonsList() {
       fetch(this.api_url + 'cartons/list', {
         method: 'GET',
+        credentials: 'include',
       }).then((response) => {
         response.json().then((cartons_originels) => {
           this.cartons_originels = cartons_originels

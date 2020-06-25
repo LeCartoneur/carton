@@ -59,6 +59,7 @@ export default {
       let res = await fetch(this.api_url + 'cartons/add', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           nom: sous_carton_nom,
           parent: this.carton._id,
@@ -76,6 +77,7 @@ export default {
       let res = await fetch(this.api_url + 'cartons/delete', {
         method: 'DELETE',
         headers: { 'content-type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ id: sous_carton_id }),
       })
       return res.status === 200 ? Promise.resolve() : Promise.reject()
@@ -100,6 +102,7 @@ export default {
           headers: {
             'content-type': 'application/json',
           },
+          credentials: 'include',
           body: JSON.stringify({
             id: carton._id,
             updates: [
@@ -126,6 +129,7 @@ export default {
         headers: {
           'content-type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({
           id: carton._id,
           updates: [
@@ -149,6 +153,7 @@ export default {
         headers: {
           'content-type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({
           id: carton._id,
           updates: [

@@ -110,6 +110,7 @@ export default {
         headers: {
           'content-type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({
           id: this.carton_id,
           sous_carton: true,

@@ -15,11 +15,7 @@
     </label>
     <label>
       Confirmer votre mot de passe
-      <input
-        type="password"
-        name="Mot de passe confirmation"
-        v-model="pwd_second"
-      />
+      <input type="password" name="Mot de passe confirmation" v-model="pwd_second" />
       <p v-if="!same_pwd" class="error">
         Les mots de passe ne sont pas identiques
       </p>
@@ -48,6 +44,7 @@ export default {
       if (this.same_pwd && this.alpha_key && this.pwd && this.pseudo) {
         fetch(process.env.VUE_APP_API_URL + 'users/add', {
           method: 'POST',
+          credentials: 'include',
           headers: {
             'content-type': 'application/json',
           },
