@@ -111,7 +111,7 @@ export default {
       let end
       let txt = item.val
       if (this.autocomplete.next === -1) {
-        txt += '}() '
+        txt += '}(placeholder) '
         end = this.autocomplete.cursor
       } else {
         end = this.autocomplete.next
