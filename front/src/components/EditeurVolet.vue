@@ -4,6 +4,7 @@
       v-model="txt_edit"
       :sous_cartons_noms="sous_cartons_noms"
       :refs_no_cartons="refs_no_cartons"
+      @add-sous-carton="(e) => addSousCartons(e)"
     />
     <editeur-volet-liste-cartons
       :sous_cartons_noms="sous_cartons_noms"
