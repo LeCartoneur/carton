@@ -121,7 +121,7 @@ Un Carton originel est un carton sans carton parent.
 
 ## Supprimer un carton par son id
 
-- Route : `POST: /cartons/get`
+- Route : `POST: /cartons/delete`
 - Body : `application/json`
 
 ```javascript
