@@ -101,7 +101,9 @@ async function generateCategories(carton_id, depth = 0) {
   await Promise.all(
     ["quoi", "fonction", "comment"].map(async (cat) => {
       // Generate sous-cartons
-      let sous_cartons = getArrBySize(getRandomInt(max_depth - depth, 0));
+      let sous_cartons = getArrBySize(
+        getRandomInt(max_depth - depth, depth === 0 ? 1 : 0)
+      );
       await Promise.all(
         sous_cartons.map(async (_, idx) => {
           sous_cartons[idx] = await createCarton(carton_id);
