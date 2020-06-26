@@ -120,7 +120,7 @@ router.delete("/delete", async (req, res) => {
   } catch (err) {
     res.status(400).send(err);
   } finally {
-    res.end();
+    res.status(200).end();
   }
 });
 
