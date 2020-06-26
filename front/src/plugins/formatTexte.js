@@ -1,4 +1,12 @@
 /**
+ * Return the regex for parsing a carton category
+ * text.
+ */
+function getRegex() {
+  return new RegExp(/{([^{}}]+)}\(([^())]+)\)/, 'g')
+}
+
+/**
  * Convert a text from database representation (references as {carton_id}(placeholder))
  * to the editor representation (references as {carton_name}(placeholder)).
  * @param {String} raw_txt Text to convert
@@ -7,7 +15,7 @@
 function fmtTxtDb2Edit(raw_txt, sous_cartons) {
   let fmt_txt = []
   if (raw_txt) {
-    const regex = /{([^}]+)}\(([^}]+)\)/g
+    const regex = getRegex()
     let res,
       start_index = 0
     while ((res = regex.exec(raw_txt)) !== null) {
@@ -33,7 +41,7 @@ function fmtTxtDb2Edit(raw_txt, sous_cartons) {
 function fmtTxtEdit2Db(edit_txt, sous_cartons) {
   let fmt_txt = []
   if (edit_txt) {
-    const regex = /{([^}]+)}\(([^}]+)\)/g
+    const regex = getRegex()
     let res,
       start_index = 0
     while ((res = regex.exec(edit_txt)) !== null) {
@@ -60,7 +68,7 @@ function fmtTxtEdit2Db(edit_txt, sous_cartons) {
 function splitTxt(raw_txt) {
   let fmt_txt = []
   if (raw_txt) {
-    const regex = /{([^}]+)}\(([^}]+)\)/g
+    const regex = getRegex()
     let res,
       start_index = 0
     while ((res = regex.exec(raw_txt)) !== null) {
@@ -89,4 +97,4 @@ function splitTxt(raw_txt) {
   return fmt_txt
 }
 
-module.exports = { fmtTxtDb2Edit, fmtTxtEdit2Db, splitTxt }
+module.exports = { fmtTxtDb2Edit, fmtTxtEdit2Db, splitTxt, getRegex }

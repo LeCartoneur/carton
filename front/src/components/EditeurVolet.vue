@@ -18,7 +18,7 @@
 <script>
 import EditeurVoletListeCartons from './EditeurVoletListeCartons.vue'
 import EditeurVoletTexte from './EditeurVoletTexte.vue'
-import { fmtTxtDb2Edit } from '../plugins/formatTexte.js'
+import { fmtTxtDb2Edit, getRegex } from '../plugins/formatTexte.js'
 export default {
   components: {
     EditeurVoletListeCartons,
@@ -101,7 +101,7 @@ export default {
      */
     checkSousCartonsRefs() {
       // Find references in text
-      const regex = /{([^}]+)}\(([^}]+)\)/g
+      const regex = getRegex()
       let refs = [...this.txt_edit.matchAll(regex)]
 
       // Find references with no matching sous cartons
