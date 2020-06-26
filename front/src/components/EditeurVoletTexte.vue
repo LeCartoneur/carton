@@ -106,6 +106,7 @@ export default {
       return position === str.length ? -1 : position
     },
     replace(item) {
+      // Replace text
       let start = this.autocomplete.previous
       let end
       let txt = item.val
@@ -118,9 +119,13 @@ export default {
       let str = this.txt.slice(0, start + 1) + txt + this.txt.slice(end, this.txt.length)
       this.$emit('input', str)
 
+      // Add any sous-carton
       if (!item.existing) {
         this.$emit('add-sous-carton', item.val.trim())
       }
+
+      // Clean suggestions
+      this.suggested_items = []
     },
   },
 }
