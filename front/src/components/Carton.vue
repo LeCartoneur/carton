@@ -183,8 +183,6 @@ export default {
 }
 
 .nom {
-  grid-column: 2;
-  grid-row: 1;
   font-size: 3.5vw;
   text-align: center;
 }
@@ -193,17 +191,10 @@ export default {
   display: flex;
 
   grid-gap: 0.5em;
-
-  grid-column: 2;
-  grid-row: 2;
 }
 
 @media (min-width: 700px) {
   .carton {
-    display: grid;
-    grid-template-columns: 40px auto 40px;
-    grid-template-rows: 15% 75% auto;
-
     border-width: 18px;
   }
   .volets-container {

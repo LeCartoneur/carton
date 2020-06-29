@@ -34,6 +34,8 @@ export default {
 
 <style>
 .sous-carton {
+  overflow: auto;
+
   grid-row: 4;
 
   box-sizing: border-box;
