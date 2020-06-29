@@ -8,9 +8,11 @@
       style="resize: vertical;"
       :value="value"
       @input="update"
+      class="editor-textarea"
     />
     <p class="error" v-if="refs_no_cartons.length > 0">
-      Les références {{ refs_no_cartons.join(', ') }} n'ont pas de cartons qui leur font référence.
+      Les références {{ refs_no_cartons.join(', ') }} n'ont pas de cartons qui
+      leur font référence.
     </p>
     <div class="popup" v-if="suggested_items.length > 0">
       <ul class="suggestions-list">
@@ -151,5 +153,9 @@ ul.suggestions-list {
 
 .suggestion-item:hover {
   background-color: rgb(154, 154, 255);
+}
+
+textarea.editor-textarea {
+  white-space: pre-wrap;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <p>
+  <p class="visionneuse">
     <span
       v-for="txt in fmt_txt"
       :key="txt.txt"
@@ -44,6 +44,10 @@ export default {
 </script>
 
 <style>
+.visionneuse {
+  white-space: pre-wrap;
+}
+
 .txt_link {
   color: blueviolet;
   background-color: rgb(240, 229, 229);
