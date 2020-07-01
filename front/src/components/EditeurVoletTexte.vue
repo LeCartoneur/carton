@@ -2,10 +2,9 @@
   <div>
     <h4>Texte du carton</h4>
     <textarea
-      rows="10"
-      cols="30"
+      rows="15"
+      cols="50"
       spellcheck="true"
-      style="resize: vertical;"
       :value="value"
       @input="update"
       class="editor-textarea"
@@ -156,6 +155,11 @@ ul.suggestions-list {
 }
 
 textarea.editor-textarea {
-  white-space: pre-wrap;
+  padding: 12px 20px;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
 }
 </style>
