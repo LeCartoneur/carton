@@ -5,30 +5,42 @@ const { generateCategories } = require("../plugins/populate.js");
 
 // Récupère la liste de tous les cartons originels
 router.get("/list", async (req, res) => {
-  const cartons = await Carton.find();
-  res.json(cartons.filter((carton) => !carton.parent));
+  try {
+    const cartons = await Carton.find();
+    res.json(cartons.filter((carton) => !carton.parent));
+  } catch {
+    res.status(500).end();
+  }
 });
 
 // Récupère la liste de tous les cartons (originels et sous-cartons)
 router.get("/list/all", async (req, res) => {
-  const cartons = await Carton.find();
-  res.json(cartons);
+  try {
+    const cartons = await Carton.find();
+    res.json(cartons);
+  } catch {
+    res.status(500).end();
+  }
 });
 
 // Récupère un carton par son _id.
 // req.body.sous_carton (bool) contrôle si
 // on renvoie également les sous cartons.
 router.post("/get", async (req, res) => {
-  const carton = await Carton.findById(req.body.id);
-  if (carton) {
-    if (!req.body.sous_carton) {
-      res.json(carton);
+  try {
+    const carton = await Carton.findById(req.body.id);
+    if (carton) {
+      if (!req.body.sous_carton) {
+        res.json(carton);
+      } else {
+        Object.assign(carton, await populateVersions(carton));
+        res.json(carton);
+      }
     } else {
-      Object.assign(carton, await populateVersions(carton));
-      res.json(carton);
+      res.status(404).end();
     }
-  } else {
-    res.status(404).end();
+  } catch {
+    res.status(500).end();
   }
 });
 
@@ -80,10 +92,14 @@ async function getSubCartons(list) {
 
 // Ajoute un nouveau carton
 router.post("/add", async (req, res) => {
-  const carton = new Carton(req.body);
-  await carton.save().then((doc) => {
-    res.status(201).json({ id: doc._id });
-  });
+  try {
+    const carton = new Carton(req.body);
+    await carton.save().then((doc) => {
+      res.status(201).json({ id: doc._id });
+    });
+  } catch {
+    res.status(400).end();
+  }
 });
 
 // Met à jour un carton existant
