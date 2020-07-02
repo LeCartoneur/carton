@@ -1,17 +1,24 @@
 <template>
   <div class="home">
-    <h1 class="nom">Vous n'avez pas de Carton ouvert! :(</h1>
-    <h3
-      style="grid-area: 3 / 2 / 3 / 2;"
-    >... mais vous pouvez en sélectionner un parmi cette liste !</h3>
-    <ul style="grid-area: 2 / 2 / 2 / 2;">
+    <h1 class="home__titre">Vous n'avez pas de Carton ouvert! :(</h1>
+    <h3 class="home__sous-titre">
+      ... mais vous pouvez en sélectionner un parmi cette liste :
+    </h3>
+    <ul class="home__liste-cartons">
       <li
         v-for="carton in cartons_originels"
         :key="carton.nom"
         @click="goToCarton(carton._id)"
         class="carton-link"
-      >{{ carton.nom }}</li>
+      >
+        {{ carton.nom }}
+      </li>
     </ul>
+    <h3 class="home__sous-titre">
+      .. ou bien
+      <span class="home__creer-carton" @click="createNewCarton">créer un nouveau carton</span>
+      !
+    </h3>
   </div>
 </template>
 
@@ -26,9 +33,16 @@ export default {
     }
   },
   methods: {
+    /**
+     * Programmatically goes to a new carton using
+     * vue router.
+     */
     goToCarton(id) {
       this.$router.push({ path: `/visionneuse/${id}` })
     },
+    /**
+     * Get the list of all originels sous-cartons.
+     */
     getCartonsList() {
       fetch(this.api_url + 'cartons/list', {
         method: 'GET',
@@ -39,6 +53,25 @@ export default {
         })
       })
     },
+    /**
+     * Create a new sous-carton and jump into it.
+     */
+    createNewCarton() {
+      fetch(this.api_url + 'cartons/add', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'content-type': 'application/json',
+        },
+        body: JSON.stringify({
+          nom: 'Mon nouveau carton',
+        }),
+      })
+        .then((response) => response.json())
+        .then((body) => {
+          this.goToCarton(body.id)
+        })
+    },
   },
   mounted() {
     this.getCartonsList()
@@ -46,7 +79,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .home {
   box-sizing: border-box;
   width: 100%;
@@ -56,39 +89,42 @@ export default {
   background-color: rgb(165, 136, 85);
   overflow-x: hidden;
   overflow-y: auto;
+
+  padding: 0 40px;
+  display: flex;
+  flex-direction: column;
+
+  border-width: 18px;
 }
 
-.nom {
-  grid-column: 2;
-  grid-row: 1;
-  font-size: 3.5vw;
+.home__titre {
+  font-size: 2rem;
   text-align: center;
 }
 
-@media (min-width: 700px) {
-  .home {
-    display: grid;
-    grid-template-columns: 40px auto 40px;
-    grid-template-rows: 15% 75% auto;
-
-    border-width: 18px;
-  }
-  .volets-container {
-    flex-direction: row;
-  }
+.home__sous-titre {
+  font-size: 1.5rem;
 }
 
+.home__liste-cartons li {
+  font-size: 1.3rem;
+}
 @media (max-width: 700px) {
   .home {
     border-width: 8px;
-  }
-
-  .volets-container {
-    flex-direction: column;
   }
 }
 
 .carton-link:hover {
   background-color: coral;
+}
+
+.home__creer-carton {
+  font-style: italic;
+  text-decoration: underline dotted khaki;
+}
+.home__creer-carton:hover {
+  font-style: normal;
+  background-color: khaki;
 }
 </style>
