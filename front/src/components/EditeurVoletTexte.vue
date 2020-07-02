@@ -64,19 +64,20 @@ export default {
     },
   },
   methods: {
+    /**
+     * Emit 'input' event with texte area text value for the v-model.
+     * Also performs sous-carton autocomplete based on user's input.
+     */
     update(e) {
       this.$emit('input', e.target.value)
       this.txt = e.target.value
       this.autocomplete.cursor = e.target.selectionStart
-      this.autocomplete.previous = this.findPreviousBracket(
-        e.target.value,
-        this.autocomplete.cursor
-      )
-      this.autocomplete.next = this.findNextBracket(e.target.value, this.autocomplete.cursor)
+      this.autocomplete.previous = this.findPreviousBracket(this.txt, this.autocomplete.cursor)
+      this.autocomplete.next = this.findNextBracket(this.txt, this.autocomplete.cursor)
 
       this.suggested_items = []
       if (this.autocomplete.previous > -1) {
-        let txt_to_complete = e.target.value.slice(
+        let txt_to_complete = this.txt.slice(
           this.autocomplete.previous + 1,
           this.autocomplete.cursor
         )
@@ -91,14 +92,22 @@ export default {
         }
       }
     },
+    /**
+     * Find the position of the first previous opening curly bracket '{'.
+     * Return -1 if a closing curly bracket '}' is found before.
+     */
     findPreviousBracket(str, cursor) {
-      let position = cursor
+      let position = cursor - 1
       while (str[position] !== '{' && position > -1) {
         if (str[position] === '}') return -1
         position--
       }
       return position
     },
+    /**
+     * Find the position of the first next closing curly bracket '}'.
+     * Return -1 if an opening curly bracket '{' is found before.
+     */
     findNextBracket(str, cursor) {
       let position = cursor
       while (str[position] !== '}' && position < str.length) {
@@ -107,6 +116,12 @@ export default {
       }
       return position === str.length ? -1 : position
     },
+    /**
+     * Callback when a suggestion is clicked by the user.
+     * Replace the content of the {} with the name of the chosen sous-carton.
+     * If inserting a new ref (no closing }) alors insert the placeholder in
+     * parenthesis.
+     */
     replace(item) {
       // Replace text
       let start = this.autocomplete.previous
