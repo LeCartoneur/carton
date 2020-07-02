@@ -133,23 +133,15 @@ export default {
 </script>
 
 <style scoped>
-@media (max-width: 700px) {
-  .toggle {
-    visibility: hidden;
-  }
-}
+.volet {
+  flex-grow: 1;
+  padding: 1rem;
+  flex-basis: 33%;
+  display: grid;
+  grid-template-rows: 15% 30% auto 26%;
 
-@media (min-width: 700px) {
-  .volet {
-    flex-grow: 1;
-    padding: 1rem;
-    /* text-align: center; */
-    flex-basis: 33%;
-    display: grid;
-    grid-template-rows: 15% 30% auto 26%;
-
-    height: min-content;
-  }
+  height: min-content;
+  max-width: 650px;
 }
 
 .toggle {
@@ -167,6 +159,12 @@ export default {
 
   background-color: black;
   color: white;
+}
+
+@media (max-width: 1300px) {
+  .toggle {
+    visibility: hidden;
+  }
 }
 
 .tranche .toggle {

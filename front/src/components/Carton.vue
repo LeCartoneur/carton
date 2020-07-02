@@ -189,26 +189,30 @@ export default {
 
 .volets-container {
   display: flex;
-
   grid-gap: 0.5em;
+  padding: 0.5rem;
 }
 
-@media (min-width: 700px) {
+@media (min-width: 1300px) {
   .carton {
     border-width: 18px;
   }
   .volets-container {
     flex-direction: row;
+    align-items: start;
+    justify-content: center;
   }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 1300px) {
   .carton {
     border-width: 8px;
   }
 
   .volets-container {
     flex-direction: column;
+    align-items: center;
+    justify-content: start;
   }
 }
 
