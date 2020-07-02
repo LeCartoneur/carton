@@ -1,6 +1,7 @@
 <template>
-  <div>
-    <h4>Texte du carton</h4>
+  <!-- eslint-disable max-len-->
+  <div style="width: 100%;">
+    <h4>Texte explicatif</h4>
     <textarea
       rows="15"
       cols="50"
@@ -10,8 +11,7 @@
       class="editor-textarea"
     />
     <p class="error" v-if="refs_no_cartons.length > 0">
-      Les références {{ refs_no_cartons.join(', ') }} n'ont pas de cartons qui
-      leur font référence.
+      Les références {{ refs_no_cartons.join(', ') }} n'ont pas de cartons qui leur font réference.
     </p>
     <div class="popup" v-if="suggested_items.length > 0">
       <ul class="suggestions-list">
@@ -26,6 +26,7 @@
       </ul>
     </div>
   </div>
+  <!-- eslint-enable max-len -->
 </template>
 
 <script>
@@ -155,6 +156,8 @@ ul.suggestions-list {
 }
 
 textarea.editor-textarea {
+  width: 100%;
+  margin: auto;
   padding: 12px 20px;
   box-sizing: border-box;
   border: 2px solid #ccc;
