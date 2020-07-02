@@ -44,8 +44,9 @@ export default {
 </script>
 
 <style>
-.visionneuse {
+.visionneuse * {
   white-space: pre-wrap;
+  text-align: justify;
 }
 
 .txt_link {

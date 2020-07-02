@@ -1,7 +1,7 @@
 <template>
   <div v-if="!reduced" :style="volet" class="volet">
     <div v-if="can_reduce" class="toggle" @click="toggleVolet">-</div>
-    <h2>{{ config.titre }}</h2>
+    <h2 style="text-align: center;">{{ config.titre }}</h2>
 
     <editeur-volet
       v-if="editor"
@@ -143,7 +143,7 @@ export default {
   .volet {
     flex-grow: 1;
     padding: 1rem;
-    text-align: center;
+    /* text-align: center; */
     flex-basis: 33%;
     display: grid;
     grid-template-rows: 15% 30% auto 26%;

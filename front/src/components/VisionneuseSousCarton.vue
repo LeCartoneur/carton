@@ -1,6 +1,6 @@
 <template>
   <div class="sous-carton" @click="changeCarton">
-    <h3>{{ carton.nom }}</h3>
+    <h3 style="text-align: center;">{{ carton.nom }}</h3>
     <p class="description">{{ description }}</p>
   </div>
 </template>
@@ -42,7 +42,7 @@ export default {
   border: 8px inset rgb(121, 93, 44);
   background-color: rgb(165, 136, 85);
 
-  padding: 2px;
+  padding: 16px;
   margin: 10px 0px;
 }
 .sous-carton h3 {
@@ -63,5 +63,6 @@ export default {
 .description {
   margin-top: 0;
   color: white;
+  white-space: pre-wrap;
 }
 </style>
