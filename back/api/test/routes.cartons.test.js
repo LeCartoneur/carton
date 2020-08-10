@@ -21,6 +21,8 @@ describe("Browse a carton and its sous-cartons", () => {
           expect(res.body).to.all.have.property(key)
         );
         parent_carton = res.body[0];
+        console.log(res.body);
+        console.log(parent_carton);
         done();
       });
   });
