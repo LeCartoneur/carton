@@ -1,10 +1,25 @@
 const chai = require("chai");
 const { expect } = require("chai");
 
+const { Carton, closeConnections } = require("../src/connection");
+const { generateCategories } = require("../src/plugins/populate");
+
 chai.use(require("chai-http"));
 chai.use(require("chai-things"));
 
 const API_URL = process.env.API_URL || "http://localhost:8000";
+
+console.log("starting tests");
+
+before(async () => {
+  console.log("... resetting DB");
+  await Carton.deleteMany();
+  console.log("... DB deleted");
+  await generateCategories();
+  console.log("... DB restored");
+  await closeConnections();
+  return Promise.resolve();
+});
 
 describe("Browse a carton and its sous-cartons", () => {
   let parent_carton;
