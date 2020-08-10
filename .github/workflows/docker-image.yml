@@ -16,3 +16,10 @@ jobs:
     - uses: actions/checkout@v2
     - name: Run the API tests suite in a Docker environment
       run: docker-compose -f ./back/api/docker-compose.yml -f ./back/api/test/docker-compose.yml up --build --abort-on-container-exit
+      env:
+        PORT: 8000
+        MONGO_URL: mongodb://mongo:27017/cartons
+        MONGO_URL_USERS: mongodb://mongo_users:27017/users
+        REDIS_URL: redis://redis_store
+        SESSION_SECRET: mon_secret_pas_secret
+        ALPHA: false
