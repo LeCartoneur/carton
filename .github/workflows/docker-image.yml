@@ -2,7 +2,7 @@ name: API CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ api-ci ]
   pull_request:
     branches: [ master ]
 
@@ -15,4 +15,4 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Run the API tests suite in a Docker environment
-      run: docker build ./back/api
+      run: docker-compose -f ./back/api/docker-compose.yml -f ./back/api/test/docker-compose.yml up --build --abort-on-container-exit
