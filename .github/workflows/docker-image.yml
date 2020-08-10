@@ -15,4 +15,4 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Run the API tests suite in a Docker environment
-      run: echo Hello world!
+      run: docker build ./back/api
