@@ -1,18 +1,22 @@
 name: API CI
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+on: [push, pull_request]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Run the API tests suite in a Docker environment
-      run: docker build ./back/api
+      - uses: actions/checkout@v2
+      - name: create env file
+        run: |
+          touch ./back/api/api.env
+          echo PORT=8000 >> ./back/api/api.env
+          echo MONGO_URL=mongodb://mongo:27017/cartons >> ./back/api/api.env
+          echo MONGO_URL_USERS=mongodb://mongo_users:27017/users >> ./back/api/api.env
+          echo REDIS_URL=redis://redis_store >> ./back/api/api.env
+          echo SESSION_SECRET=mon_secret_pas_secret >> ./back/api/api.env
+          echo ALPHA=false >> ./back/api/api.env
+          cat ./back/api/api.env
+      - name: Run the API tests suite in a Docker environment
+        run: docker-compose -f ./back/api/docker-compose.yml -f ./back/api/test/docker-compose.yml up --build --abort-on-container-exit
