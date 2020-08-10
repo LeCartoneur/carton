@@ -18,4 +18,17 @@ const AlphaKey = connDbUsers.model(
   require("./models/AlphaKey.model.js")
 );
 
-module.exports = { Carton, User, AlphaKey, connDb, connDbUsers };
+async function closeConnections() {
+  try {
+    mongoose.disconnect();
+  } catch (error) {}
+}
+
+module.exports = {
+  Carton,
+  User,
+  AlphaKey,
+  connDb,
+  connDbUsers,
+  closeConnections,
+};
