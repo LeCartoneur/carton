@@ -2,6 +2,8 @@
 
 Cette API permet de communiquer avec la base de données des Cartons afin de réaliser des tâches usuelles (récupération d'un carton, ajout, modification, suppression, etc.). Les routes disponibles sont les suivantes:
 
+- [GET /cartons/list](#Récupérer-tous-les-cartons-originels-dans-la-base)
+- [GET /cartons/list/all](<#Récupérer-tous-les-cartons-(originels-et-sous-cartons)-de-la-base>)
 - [GET /cartons/:id](#Récupérer-un-carton-par-son-id)
 > DISCLAIMER, API en cours de développement : les points d'entrée peuvent changer sans préavis et le contenu de la base de donnée peut être réinitialisé à tout moment.
 
@@ -61,12 +63,20 @@ Cette API permet de communiquer avec la base de données des Cartons afin de ré
 Un Carton originel est un carton sans carton parent.
 
 - Route : `GET: /cartons/list`
-- Response : `application/json` la liste des cartons originels.
+- Response : `application/json`
+
+```js
+[Carton];
+```
 
 ## Récupérer tous les cartons (originels et sous-cartons) de la base
 
 - Route : `GET: /cartons/list/all`
-- Response : `application/json` la liste des cartons.
+- Response : `application/json`
+
+```js
+[Carton];
+```
 
 ## Récupérer un carton par son id
 
