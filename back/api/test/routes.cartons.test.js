@@ -12,16 +12,13 @@ const API_URL = process.env.API_URL || "http://localhost:8000";
 console.log("starting tests");
 
 before(async () => {
-  console.log("... resetting DB");
   await Carton.deleteMany();
-  console.log("... DB deleted");
   await generateCategories();
-  console.log("... DB restored");
   await closeConnections();
   return Promise.resolve();
 });
 
-describe("Browse a carton and its sous-cartons", () => {
+describe("Browse the list of originels cartons", () => {
   let parent_carton;
 
   it("should get the list of originels cartons", (done) => {
@@ -32,7 +29,8 @@ describe("Browse a carton and its sous-cartons", () => {
         if (err) done(err);
         expect(res).to.have.status(200);
         expect(res.body).to.be.an("array");
-        ["_id", "user", "nom", "parent", "private"].forEach((key) =>
+        expect(res.body.length).to.be.greaterThan(0);
+        [("_id", "user", "nom", "parent", "private")].forEach((key) =>
           expect(res.body).to.all.have.property(key)
         );
         parent_carton = res.body[0];
@@ -40,7 +38,7 @@ describe("Browse a carton and its sous-cartons", () => {
       });
   });
 
-  it("should get a sous-carton from the parent", (done) => {
+  it("should get a sous-carton from the previous carton", (done) => {
     let sous_carton_id =
       parent_carton.versions[0].quoi.sous_cartons[0].carton_id;
     chai
@@ -105,49 +103,80 @@ describe("Manage a Carton", () => {
       });
   });
 
-  let updates = [
-    {
-      operation: "set",
-      path: "nom",
-      value: "nouveau nom",
-    },
-  ];
-  it("should update the content of a carton", (done) => {
-    chai
+  it("should update the content of a carton", async () => {
+    let updates = [
+      {
+        operation: "set",
+        path: "nom",
+        value: "nouveau nom",
+      },
+    ];
+    // Update the carton
+    let res = await chai
       .request(API_URL)
       .post("/cartons/update")
-      .send({ id: carton_id, updates })
-      .end((err, res) => {
-        if (err) done(err);
-        expect(res).to.have.status(200);
-        done();
-      });
-  });
+      .send({ id: carton_id, updates: updates });
+    expect(res).to.have.status(200);
 
-  it("should check carton has the new content", (done) => {
-    chai
+    // Check carton has the new content
+    res = await chai
       .request(API_URL)
       .post("/cartons/get")
-      .send({ id: carton_id })
-      .end((err, res) => {
-        if (err) done(err);
-        expect(res).to.be.json;
-        expect(res.body[updates[0].path]).to.equal(updates[0].value);
-        done();
-      });
+      .send({ id: carton_id });
+    expect(res).to.be.json;
+    expect(res.body[updates[0].path]).to.equal(updates[0].value);
   });
 
-  it("should delete the inserted carton from the database", (done) => {
-    chai
+  it("should add a sous-carton to the existing carton", async () => {
+    // Create a new sous-carton
+    let sous_carton = { nom: "mon sous-carton", user: "thomas", versions: [] };
+    let sous_carton_id;
+    let res = await chai
+      .request(API_URL)
+      .post("/cartons/add")
+      .send(sous_carton);
+    expect(res).to.have.status(201);
+    sous_carton_id = res.body.id;
+
+    // Add the newly created carton as a sous-carton of an existing carton
+    let sous_carton_update = [
+      {
+        path: "versions.0.quoi.sous_cartons",
+        value: { carton_id: sous_carton_id, version_id: 0 },
+        operation: "push",
+      },
+    ];
+    res = await chai
+      .request(API_URL)
+      .post("/cartons/update")
+      .send({ id: carton_id, updates: sous_carton_update });
+    console.log(res.text);
+    expect(res).to.have.status(200);
+
+    // Check that the parent carton has the corresponding sous-carton
+    res = await chai
+      .request(API_URL)
+      .post("/cartons/get")
+      .send({ id: carton_id });
+    expect(res.body.versions[0].quoi.sous_cartons.length).to.equal(1);
+    expect(res.body.versions[0].quoi.sous_cartons[0].carton_id).to.equal(
+      sous_carton_id
+    );
+  });
+
+  it("should delete the inserted carton from the database", async () => {
+    // Delete the carton
+    let res = await chai
       .request(API_URL)
       .delete("/cartons/delete")
-      .send({ id: carton_id })
-      .end((err, res) => {
-        if (err) done(err);
-        expect(res).to.have.status(200);
-        done();
-      });
+      .send({ id: carton_id });
+    expect(res).to.have.status(200);
+
+    // Check it cannot be found
+    res = await chai
+      .request(API_URL)
+      .delete("/cartons/get")
+      .send({ id: carton_id });
+    expect(res).to.have.status(404);
   });
 });
-
-describe("DELETE /cartons/delete route", (done) => {});
