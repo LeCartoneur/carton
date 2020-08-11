@@ -10,7 +10,7 @@ Cette API permet de communiquer avec la base de données des Cartons afin de ré
 
 > DISCLAIMER, API en cours de développement : les points d'entrée peuvent changer sans préavis et le contenu de la base de donnée peut être réinitialisé à tout moment.
 
-## Description d'un objet carton
+## Objet carton
 
 ```javascript
 {
@@ -68,23 +68,23 @@ Par défaut récupère tous les cartons originels (i.e. sans parent) de la base.
 - Route : `GET /cartons/list/?all=true|false`
 - Response :
   - Type : `application/json`,
-  - Body : une liste d'objets [`Carton`](#Description-d'un-objet-carton).
+  - Body : une liste d'objets [`Carton`](#Objet-carton).
 
 ## Récupérer un carton par son id
 
 - Route : `GET /cartons/:id/?sous_cartons=true|false`
 - Response :
   - Type : `application/json`
-  - Body : l'objet [`Carton`](#Description-d'un-objet-carton) souhaité.
+  - Body : l'objet [`Carton`](#Objet-carton) souhaité.
   - Code : `200` si le carton est trouvé, `404` si non.
-- L'option `sous_cartons` permet de retourner les sous-cartons en tant qu'objets [`Carton`](#Description-d'un-objet-carton), sinon c'est leurs ids qui sont retournés.
+- L'option `sous_cartons` permet de retourner les sous-cartons en tant qu'objets [`Carton`](#Objet-carton), sinon c'est leurs ids qui sont retournés.
 
 ## Ajouter un nouveau carton
 
 - Route : `POST /cartons`
 - Requête :
   - Type : `application/json`
-  - Body : un objet [`Carton`](#Description-d'un-objet-carton) représentant le nouveau carton.
+  - Body : un objet [`Carton`](#Objet-carton) représentant le nouveau carton.
 - Réponse :
   - Type : `application/json`
   - Body : id du carton inséré
@@ -120,7 +120,7 @@ Par défaut récupère tous les cartons originels (i.e. sans parent) de la base.
   }
   ```
 
-* Le path suit la [_dot notation_](https://docs.mongodb.com/manual/core/document/#document-dot-notation) de MongoDB pour sélectionner une propriété d'un objet [`Carton`](#Description-d'un-objet-carton).
+* Le path suit la [_dot notation_](https://docs.mongodb.com/manual/core/document/#document-dot-notation) de MongoDB pour sélectionner une propriété d'un objet [`Carton`](#Objet-carton).
 * L'opération peut être :
   - `set` pour remplacer le contenu d'une variable,
   - `push` pour ajouter à la fin d'un array,
