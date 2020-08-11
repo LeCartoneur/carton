@@ -3,21 +3,17 @@ const router = express.Router();
 const { Carton } = require("../connection");
 const { generateCategories } = require("../plugins/populate.js");
 
-// Récupère la liste de tous les cartons originels
+// Récupère la liste de tous les cartons originels par défaut,
+// et tous les cartons si `all` est vraie
 router.get("/list", async (req, res) => {
+  const all = req.query.all | false;
   try {
     const cartons = await Carton.find();
-    res.json(cartons.filter((carton) => !carton.parent));
-  } catch {
-    res.status(500).end();
-  }
-});
-
-// Récupère la liste de tous les cartons (originels et sous-cartons)
-router.get("/list/all", async (req, res) => {
-  try {
-    const cartons = await Carton.find();
-    res.json(cartons);
+    if (all) {
+      res.json(cartons);
+    } else {
+      res.json(cartons.filter((carton) => !carton.parent));
+    }
   } catch {
     res.status(500).end();
   }
@@ -26,11 +22,13 @@ router.get("/list/all", async (req, res) => {
 // Récupère un carton par son _id.
 // req.body.sous_carton (bool) contrôle si
 // on renvoie également les sous cartons.
-router.post("/get", async (req, res) => {
+router.get("/:id", async (req, res) => {
+  const carton_id = req.params.id;
+  const sous_carton = req.query.sous_cartons | false;
   try {
-    const carton = await Carton.findById(req.body.id);
+    const carton = await Carton.findById(carton_id);
     if (carton) {
-      if (!req.body.sous_carton) {
+      if (!sous_carton) {
         res.json(carton);
       } else {
         Object.assign(carton, await populateVersions(carton));
@@ -91,7 +89,7 @@ async function getSubCartons(list) {
 }
 
 // Ajoute un nouveau carton
-router.post("/add", async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const carton = new Carton(req.body);
     await carton.save().then((doc) => {
@@ -103,13 +101,14 @@ router.post("/add", async (req, res) => {
 });
 
 // Met à jour un carton existant
-router.post("/update", async (req, res) => {
+router.put("/:id", async (req, res) => {
+  const carton_id = req.params.id;
   try {
     const operations = ["push", "set", "pull"];
     await Promise.all(
       req.body.updates.map((update) => {
         if (operations.includes(update.operation)) {
-          return Carton.findByIdAndUpdate(req.body.id, {
+          return Carton.findByIdAndUpdate(carton_id, {
             [`$${update.operation}`]: {
               [update.path]: update.value,
             },
@@ -127,12 +126,13 @@ router.post("/update", async (req, res) => {
 });
 
 // Delete a carton given its id. Recursively delete its sous-carton.
-router.delete("/delete", async (req, res) => {
+router.delete("/:id", async (req, res) => {
   // TODO: ajouter vérification user === carton.user
   // TODO: faire les suppressions au sein d'une transaction
   // https://mongoosejs.com/docs/transactions.html
+  const carton_id = req.params.id;
   try {
-    await deleteSousCartons(req.body.id);
+    await deleteSousCartons(carton_id);
   } catch (err) {
     res.status(400).send(err);
   } finally {

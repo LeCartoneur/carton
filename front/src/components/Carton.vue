@@ -70,7 +70,7 @@ export default {
     /**
      * Remove the versions key and replace it with the content of the
      * desired version. Should be removed when the 'flatten' option
-     * will be implemented in the route cartons/get.
+     * will be implemented in the route GET cartons/:id.
      */
     carton_flat() {
       let carton = JSON.parse(JSON.stringify(this.carton))
@@ -105,16 +105,9 @@ export default {
   },
   methods: {
     loadCarton() {
-      fetch(this.api_url + 'cartons/get', {
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-        },
+      fetch(this.api_url + `cartons/${this.carton_id}`, {
+        method: 'GET',
         credentials: 'include',
-        body: JSON.stringify({
-          id: this.carton_id,
-          sous_carton: true,
-        }),
       })
         .then((response) => {
           return response.json()

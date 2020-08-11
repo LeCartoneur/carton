@@ -57,7 +57,7 @@ export default {
      * Create a new sous-carton and jump into it.
      */
     createNewCarton() {
-      fetch(this.api_url + 'cartons/add', {
+      fetch(this.api_url + 'cartons', {
         method: 'POST',
         credentials: 'include',
         headers: {

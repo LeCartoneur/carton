@@ -8,6 +8,7 @@ const port = process.env.PORT || 8000;
 
 // Express app middlewares
 const app = express();
+app.set("query parser", "simple"); // prevent parsing objects in query params
 app.use(
   cors({
     origin: [

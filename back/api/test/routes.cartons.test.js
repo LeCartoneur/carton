@@ -43,10 +43,7 @@ describe("Browse the list of originels cartons", () => {
       parent_carton.versions[0].quoi.sous_cartons[0].carton_id;
     chai
       .request(API_URL)
-      .post("/cartons/get")
-      .send({
-        id: sous_carton_id,
-      })
+      .get(`/cartons/${sous_carton_id}`)
       .end((err, res) => {
         if (err) done(err);
         expect(res).to.have.status(200);
@@ -68,7 +65,7 @@ describe("Manage a Carton", () => {
   it("should insert a new carton", (done) => {
     chai
       .request(API_URL)
-      .post("/cartons/add")
+      .post("/cartons/")
       .send(carton)
       .end((err, res) => {
         if (err) done(err);
@@ -84,8 +81,7 @@ describe("Manage a Carton", () => {
   it("should get back the inserted carton", (done) => {
     chai
       .request(API_URL)
-      .post("/cartons/get")
-      .send({ id: carton_id })
+      .get(`/cartons/${carton_id}`)
       .end((err, res) => {
         if (err) done(err);
         expect(res).to.have.status(200);
@@ -114,15 +110,12 @@ describe("Manage a Carton", () => {
     // Update the carton
     let res = await chai
       .request(API_URL)
-      .post("/cartons/update")
-      .send({ id: carton_id, updates: updates });
+      .put(`/cartons/${carton_id}`)
+      .send({ updates: updates });
     expect(res).to.have.status(200);
 
     // Check carton has the new content
-    res = await chai
-      .request(API_URL)
-      .post("/cartons/get")
-      .send({ id: carton_id });
+    res = await chai.request(API_URL).get(`/cartons/${carton_id}`);
     expect(res).to.be.json;
     expect(res.body[updates[0].path]).to.equal(updates[0].value);
   });
@@ -131,10 +124,7 @@ describe("Manage a Carton", () => {
     // Create a new sous-carton
     let sous_carton = { nom: "mon sous-carton", user: "thomas", versions: [] };
     let sous_carton_id;
-    let res = await chai
-      .request(API_URL)
-      .post("/cartons/add")
-      .send(sous_carton);
+    let res = await chai.request(API_URL).post("/cartons/").send(sous_carton);
     expect(res).to.have.status(201);
     sous_carton_id = res.body.id;
 
@@ -148,16 +138,13 @@ describe("Manage a Carton", () => {
     ];
     res = await chai
       .request(API_URL)
-      .post("/cartons/update")
-      .send({ id: carton_id, updates: sous_carton_update });
+      .put(`/cartons/${carton_id}`)
+      .send({ updates: sous_carton_update });
     console.log(res.text);
     expect(res).to.have.status(200);
 
     // Check that the parent carton has the corresponding sous-carton
-    res = await chai
-      .request(API_URL)
-      .post("/cartons/get")
-      .send({ id: carton_id });
+    res = await chai.request(API_URL).get(`/cartons/${carton_id}`);
     expect(res.body.versions[0].quoi.sous_cartons.length).to.equal(1);
     expect(res.body.versions[0].quoi.sous_cartons[0].carton_id).to.equal(
       sous_carton_id
@@ -166,17 +153,11 @@ describe("Manage a Carton", () => {
 
   it("should delete the inserted carton from the database", async () => {
     // Delete the carton
-    let res = await chai
-      .request(API_URL)
-      .delete("/cartons/delete")
-      .send({ id: carton_id });
+    let res = await chai.request(API_URL).delete(`/cartons/${carton_id}`);
     expect(res).to.have.status(200);
 
-    // Check it cannot be found
-    res = await chai
-      .request(API_URL)
-      .delete("/cartons/get")
-      .send({ id: carton_id });
+    // Check that it cannot be found
+    res = await chai.request(API_URL).get(`/cartons/${carton_id}`);
     expect(res).to.have.status(404);
   });
 });

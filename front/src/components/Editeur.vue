@@ -53,10 +53,10 @@ export default {
       return carton
     },
     /**
-     * Wrapper to the API route 'cartons/add' to add a new carton to the DB.
+     * Wrapper to the API route POST '/cartons' to add a new carton to the DB.
      */
     async addNewCarton(sous_carton_nom) {
-      let res = await fetch(this.api_url + 'cartons/add', {
+      let res = await fetch(this.api_url + 'cartons/', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         credentials: 'include',
@@ -71,14 +71,12 @@ export default {
       return body.id
     },
     /**
-     * Wrapper to the API route 'cartons/delete' to remove a carton from the DB.
+     * Wrapper to the API route DELETE 'cartons/:id' to remove a carton from the DB.
      */
     async deleteSousCarton(sous_carton_id) {
-      let res = await fetch(this.api_url + 'cartons/delete', {
+      let res = await fetch(this.api_url + `cartons/${sous_carton_id}`, {
         method: 'DELETE',
-        headers: { 'content-type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ id: sous_carton_id }),
       })
       return res.status === 200 ? Promise.resolve() : Promise.reject()
     },
@@ -97,14 +95,13 @@ export default {
           operation === 'push'
             ? { carton_id: sous_carton_id, version: 0 }
             : { carton_id: sous_carton_id }
-        return fetch(this.api_url + 'cartons/update', {
-          method: 'POST',
+        return fetch(this.api_url + `cartons/${carton._id}`, {
+          method: 'PUT',
           headers: {
             'content-type': 'application/json',
           },
           credentials: 'include',
           body: JSON.stringify({
-            id: carton._id,
             updates: [
               {
                 path: `versions.${carton_version_id}.${update.category}.sous_cartons`,
@@ -119,19 +116,18 @@ export default {
       } else return false
     },
     /**
-     * Wrapper around the cartons/update route, specifically to update
+     * Wrapper around the PUT cartons/:id route, specifically to update
      * the text of a carton's category (as the text must be format
      * with the updated ids of the sous-cartons).
      */
     updateCategoryText(carton, carton_version_id, update) {
-      return fetch(this.api_url + 'cartons/update', {
-        method: 'POST',
+      return fetch(this.api_url + `cartons/${carton._id}`, {
+        method: 'PUT',
         headers: {
           'content-type': 'application/json',
         },
         credentials: 'include',
         body: JSON.stringify({
-          id: carton._id,
           updates: [
             {
               path: `versions.${carton_version_id}.${update.category}.texte`,
@@ -145,17 +141,16 @@ export default {
       })
     },
     /**
-     * Wrapper around the cartons/update route for generic set updates.
+     * Wrapper around the PUT cartons/:id route for generic set updates.
      */
     updateItem(carton, update) {
-      return fetch(this.api_url + 'cartons/update', {
-        method: 'POST',
+      return fetch(this.api_url + `cartons/${carton._id}`, {
+        method: 'PUT',
         headers: {
           'content-type': 'application/json',
         },
         credentials: 'include',
         body: JSON.stringify({
-          id: carton._id,
           updates: [
             {
               path: update.path,
