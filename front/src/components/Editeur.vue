@@ -53,10 +53,10 @@ export default {
       return carton
     },
     /**
-     * Wrapper to the API route 'cartons/add' to add a new carton to the DB.
+     * Wrapper to the API route POST '/cartons' to add a new carton to the DB.
      */
     async addNewCarton(sous_carton_nom) {
-      let res = await fetch(this.api_url + 'cartons/add', {
+      let res = await fetch(this.api_url + 'cartons/', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         credentials: 'include',

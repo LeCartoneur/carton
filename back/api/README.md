@@ -5,6 +5,7 @@ Cette API permet de communiquer avec la base de données des Cartons afin de ré
 - [GET /cartons/list](#Récupérer-tous-les-cartons-originels-dans-la-base)
 - [GET /cartons/list/all](<#Récupérer-tous-les-cartons-(originels-et-sous-cartons)-de-la-base>)
 - [GET /cartons/:id](#Récupérer-un-carton-par-son-id)
+- [POST: /cartons/](#Ajouter-un-nouveau-carton)
 > DISCLAIMER, API en cours de développement : les points d'entrée peuvent changer sans préavis et le contenu de la base de donnée peut être réinitialisé à tout moment.
 
 ## Description d'un objet carton
@@ -88,7 +89,7 @@ Un Carton originel est un carton sans carton parent.
 
 ## Ajouter un nouveau carton
 
-- Route : `POST: /cartons/add`
+- Route : `POST: /cartons`
 - Body : `application/json` avec le nouveau carton.
 
 ## Modifier un carton existant

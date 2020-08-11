@@ -93,7 +93,7 @@ async function getSubCartons(list) {
 }
 
 // Ajoute un nouveau carton
-router.post("/add", async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const carton = new Carton(req.body);
     await carton.save().then((doc) => {

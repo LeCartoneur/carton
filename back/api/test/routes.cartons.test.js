@@ -65,7 +65,7 @@ describe("Manage a Carton", () => {
   it("should insert a new carton", (done) => {
     chai
       .request(API_URL)
-      .post("/cartons/add")
+      .post("/cartons/")
       .send(carton)
       .end((err, res) => {
         if (err) done(err);
@@ -124,10 +124,7 @@ describe("Manage a Carton", () => {
     // Create a new sous-carton
     let sous_carton = { nom: "mon sous-carton", user: "thomas", versions: [] };
     let sous_carton_id;
-    let res = await chai
-      .request(API_URL)
-      .post("/cartons/add")
-      .send(sous_carton);
+    let res = await chai.request(API_URL).post("/cartons/").send(sous_carton);
     expect(res).to.have.status(201);
     sous_carton_id = res.body.id;
 
