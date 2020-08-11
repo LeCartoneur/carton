@@ -1,5 +1,8 @@
-# Description de l'interface avec la base de données Carton
+# Description de l'API Carton
 
+Cette API permet de communiquer avec la base de données des Cartons afin de réaliser des tâches usuelles (récupération d'un carton, ajout, modification, suppression, etc.). Les routes disponibles sont les suivantes:
+
+- [GET /cartons/:id](#Récupérer-un-carton-par-son-id)
 > DISCLAIMER, API en cours de développement : les points d'entrée peuvent changer sans préavis et le contenu de la base de donnée peut être réinitialisé à tout moment.
 
 ## Description d'un objet carton
@@ -67,15 +70,7 @@ Un Carton originel est un carton sans carton parent.
 
 ## Récupérer un carton par son id
 
-- Route : `POST: /cartons/get`
-- Body : `application/json`
-
-```javascript
-{
-  id,
-  sous_cartons: Boolean
-}
-```
+- Route : `GET: /cartons/:id/?sous_cartons=true|false`
 
 - L'option `sous_cartons` permet de retourner les sous-cartons en tant qu'objets, sinon c'est leurs ids qui sont retournés.
 

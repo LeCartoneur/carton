@@ -26,11 +26,13 @@ router.get("/list/all", async (req, res) => {
 // Récupère un carton par son _id.
 // req.body.sous_carton (bool) contrôle si
 // on renvoie également les sous cartons.
-router.post("/get", async (req, res) => {
+router.get("/:id", async (req, res) => {
+  const carton_id = req.params.id;
+  const sous_carton = req.query.sous_cartons | false;
   try {
-    const carton = await Carton.findById(req.body.id);
+    const carton = await Carton.findById(carton_id);
     if (carton) {
-      if (!req.body.sous_carton) {
+      if (!sous_carton) {
         res.json(carton);
       } else {
         Object.assign(carton, await populateVersions(carton));
