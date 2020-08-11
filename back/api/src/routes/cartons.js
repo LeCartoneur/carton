@@ -105,13 +105,14 @@ router.post("/", async (req, res) => {
 });
 
 // Met à jour un carton existant
-router.post("/update", async (req, res) => {
+router.put("/:id", async (req, res) => {
+  const carton_id = req.params.id;
   try {
     const operations = ["push", "set", "pull"];
     await Promise.all(
       req.body.updates.map((update) => {
         if (operations.includes(update.operation)) {
-          return Carton.findByIdAndUpdate(req.body.id, {
+          return Carton.findByIdAndUpdate(carton_id, {
             [`$${update.operation}`]: {
               [update.path]: update.value,
             },

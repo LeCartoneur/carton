@@ -110,8 +110,8 @@ describe("Manage a Carton", () => {
     // Update the carton
     let res = await chai
       .request(API_URL)
-      .post("/cartons/update")
-      .send({ id: carton_id, updates: updates });
+      .put(`/cartons/${carton_id}`)
+      .send({ updates: updates });
     expect(res).to.have.status(200);
 
     // Check carton has the new content
@@ -138,8 +138,8 @@ describe("Manage a Carton", () => {
     ];
     res = await chai
       .request(API_URL)
-      .post("/cartons/update")
-      .send({ id: carton_id, updates: sous_carton_update });
+      .put(`/cartons/${carton_id}`)
+      .send({ updates: sous_carton_update });
     console.log(res.text);
     expect(res).to.have.status(200);
 

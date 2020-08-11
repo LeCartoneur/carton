@@ -97,14 +97,13 @@ export default {
           operation === 'push'
             ? { carton_id: sous_carton_id, version: 0 }
             : { carton_id: sous_carton_id }
-        return fetch(this.api_url + 'cartons/update', {
-          method: 'POST',
+        return fetch(this.api_url + `cartons/${carton._id}`, {
+          method: 'PUT',
           headers: {
             'content-type': 'application/json',
           },
           credentials: 'include',
           body: JSON.stringify({
-            id: carton._id,
             updates: [
               {
                 path: `versions.${carton_version_id}.${update.category}.sous_cartons`,
@@ -119,19 +118,18 @@ export default {
       } else return false
     },
     /**
-     * Wrapper around the cartons/update route, specifically to update
+     * Wrapper around the PUT cartons/:id route, specifically to update
      * the text of a carton's category (as the text must be format
      * with the updated ids of the sous-cartons).
      */
     updateCategoryText(carton, carton_version_id, update) {
-      return fetch(this.api_url + 'cartons/update', {
-        method: 'POST',
+      return fetch(this.api_url + `cartons/${carton._id}`, {
+        method: 'PUT',
         headers: {
           'content-type': 'application/json',
         },
         credentials: 'include',
         body: JSON.stringify({
-          id: carton._id,
           updates: [
             {
               path: `versions.${carton_version_id}.${update.category}.texte`,
@@ -145,17 +143,16 @@ export default {
       })
     },
     /**
-     * Wrapper around the cartons/update route for generic set updates.
+     * Wrapper around the PUT cartons/:id route for generic set updates.
      */
     updateItem(carton, update) {
-      return fetch(this.api_url + 'cartons/update', {
-        method: 'POST',
+      return fetch(this.api_url + `cartons/${carton._id}`, {
+        method: 'PUT',
         headers: {
           'content-type': 'application/json',
         },
         credentials: 'include',
         body: JSON.stringify({
-          id: carton._id,
           updates: [
             {
               path: update.path,
