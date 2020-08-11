@@ -3,21 +3,17 @@ const router = express.Router();
 const { Carton } = require("../connection");
 const { generateCategories } = require("../plugins/populate.js");
 
-// Récupère la liste de tous les cartons originels
+// Récupère la liste de tous les cartons originels par défaut,
+// et tous les cartons si `all` est vraie
 router.get("/list", async (req, res) => {
+  const all = req.query.all | false;
   try {
     const cartons = await Carton.find();
-    res.json(cartons.filter((carton) => !carton.parent));
-  } catch {
-    res.status(500).end();
-  }
-});
-
-// Récupère la liste de tous les cartons (originels et sous-cartons)
-router.get("/list/all", async (req, res) => {
-  try {
-    const cartons = await Carton.find();
-    res.json(cartons);
+    if (all) {
+      res.json(cartons);
+    } else {
+      res.json(cartons.filter((carton) => !carton.parent));
+    }
   } catch {
     res.status(500).end();
   }
