@@ -7,6 +7,8 @@ Cette API permet de communiquer avec la base de données des Cartons afin de ré
 - [GET /cartons/:id](#Récupérer-un-carton-par-son-id)
 - [POST: /cartons/](#Ajouter-un-nouveau-carton)
 - [PUT: /cartons/:id](#Modifier-un-carton-existant)
+- [DELETE: /cartons/:id](#Supprimer-un-carton-par-son-id)
+
 > DISCLAIMER, API en cours de développement : les points d'entrée peuvent changer sans préavis et le contenu de la base de donnée peut être réinitialisé à tout moment.
 
 ## Description d'un objet carton
@@ -127,14 +129,7 @@ Un Carton originel est un carton sans carton parent.
 
 ## Supprimer un carton par son id
 
-- Route : `POST: /cartons/delete`
-- Body : `application/json`
-
-```javascript
-{
-  id,
-}
-```
+- Route : `DELETE: /cartons/:id`
 
 Tous les sous-cartons du carton seront supprimés de manière récursive.
 

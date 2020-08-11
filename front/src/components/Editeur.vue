@@ -71,14 +71,12 @@ export default {
       return body.id
     },
     /**
-     * Wrapper to the API route 'cartons/delete' to remove a carton from the DB.
+     * Wrapper to the API route DELETE 'cartons/:id' to remove a carton from the DB.
      */
     async deleteSousCarton(sous_carton_id) {
-      let res = await fetch(this.api_url + 'cartons/delete', {
+      let res = await fetch(this.api_url + `cartons/${sous_carton_id}`, {
         method: 'DELETE',
-        headers: { 'content-type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ id: sous_carton_id }),
       })
       return res.status === 200 ? Promise.resolve() : Promise.reject()
     },

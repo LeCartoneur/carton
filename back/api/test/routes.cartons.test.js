@@ -153,17 +153,11 @@ describe("Manage a Carton", () => {
 
   it("should delete the inserted carton from the database", async () => {
     // Delete the carton
-    let res = await chai
-      .request(API_URL)
-      .delete("/cartons/delete")
-      .send({ id: carton_id });
+    let res = await chai.request(API_URL).delete(`/cartons/${carton_id}`);
     expect(res).to.have.status(200);
 
-    // Check it cannot be found
-    res = await chai
-      .request(API_URL)
-      .delete("/cartons/get")
-      .send({ id: carton_id });
+    // Check that it cannot be found
+    res = await chai.request(API_URL).get(`/cartons/${carton_id}`);
     expect(res).to.have.status(404);
   });
 });

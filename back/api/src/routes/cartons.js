@@ -130,12 +130,13 @@ router.put("/:id", async (req, res) => {
 });
 
 // Delete a carton given its id. Recursively delete its sous-carton.
-router.delete("/delete", async (req, res) => {
+router.delete("/:id", async (req, res) => {
   // TODO: ajouter vérification user === carton.user
   // TODO: faire les suppressions au sein d'une transaction
   // https://mongoosejs.com/docs/transactions.html
+  const carton_id = req.params.id;
   try {
-    await deleteSousCartons(req.body.id);
+    await deleteSousCartons(carton_id);
   } catch (err) {
     res.status(400).send(err);
   } finally {
