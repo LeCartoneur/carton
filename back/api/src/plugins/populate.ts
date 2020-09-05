@@ -232,4 +232,4 @@ const mots = [
   "Cocotte",
 ];
 
-module.exports = { populate, generateCategories };
+export { populate, generateCategories };

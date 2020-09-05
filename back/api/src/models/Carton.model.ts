@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const model_sous_carton = {
   carton_id: {
@@ -60,4 +60,4 @@ const cartonSchema = new mongoose.Schema({
   },
 });
 
-module.exports = cartonSchema;
+export default cartonSchema;

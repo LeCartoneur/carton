@@ -1,18 +1,18 @@
-const express = require("express");
+import express from "express";
+import { Carton } from "../connection";
+import { generateCategories } from "../plugins/populate";
 const router = express.Router();
-const { Carton } = require("../connection");
-const { generateCategories } = require("../plugins/populate.js");
 
 // Récupère la liste de tous les cartons originels par défaut,
 // et tous les cartons si `all` est vraie
 router.get("/list", async (req, res) => {
-  const all = req.query.all | false;
+  const all = req.query.all ? req.query.all : false;
   try {
     const cartons = await Carton.find();
     if (all) {
       res.json(cartons);
     } else {
-      res.json(cartons.filter((carton) => !carton.parent));
+      res.json(cartons.filter((carton) => !(carton as any).parent));
     }
   } catch {
     res.status(500).end();
@@ -24,7 +24,7 @@ router.get("/list", async (req, res) => {
 // on renvoie également les sous cartons.
 router.get("/:id", async (req, res) => {
   const carton_id = req.params.id;
-  const sous_carton = req.query.sous_cartons | false;
+  const sous_carton = req.query.sous_cartons ? req.query.sous_cartons : false;
   try {
     const carton = await Carton.findById(carton_id);
     if (carton) {
@@ -67,9 +67,9 @@ async function getSubCartons(list) {
   try {
     let cartons = [];
     for (let carton of list) {
-      let res = await Carton.findById(carton.carton_id).lean();
+      let res: any = await Carton.findById(carton.carton_id).lean();
       if (res) {
-        let categories = {};
+        let categories: any = {};
         if (res.versions[carton.version_id]) {
           categories = res.versions[carton.version_id];
         } else {
@@ -168,7 +168,7 @@ async function deleteSousCartons(carton_id) {
 async function getSousCartonsFlat(carton_id) {
   let sous_cartons_flat = [];
   try {
-    let carton = await Carton.findById(carton_id);
+    let carton: any = await Carton.findById(carton_id);
     if (carton.versions.length)
       carton.versions.forEach((v) => {
         ["quoi", "comment", "fonction", "exemples", "plus_loin"].forEach(
@@ -192,8 +192,8 @@ async function getSousCartonsFlat(carton_id) {
 if (process.env.ALPHA === "true") {
   router.post("/reset", async (req, res) => {
     if (req.body.mdp === process.env.RESET_KEY) {
-      await Carton.deleteMany();
-      await generateCategories();
+      //await Carton.deleteMany();
+      //await generateCategories();
       res.status(205).end();
     } else {
       res.status(404).end();
