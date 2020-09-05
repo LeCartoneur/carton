@@ -1,5 +1,7 @@
-const { Carton } = require("../connection");
-const LoremIpsum = require("lorem-ipsum").LoremIpsum;
+import { carton_model } from "../connection";
+import {} from "../models/Carton.model";
+import { LoremIpsum } from "lorem-ipsum";
+import mongoose from "mongoose";
 
 const lorem = new LoremIpsum({
   sentencesPerParagraph: {
@@ -38,7 +40,7 @@ async function populate() {
       },
     ],
   };
-  const carton_ordinateur = new Carton(ordinateur);
+  const carton_ordinateur = new carton_model(ordinateur);
   const ordinateur_id = await carton_ordinateur.save().then((doc) => doc._id);
 
   // Ajout du sous-carton matériel, avec ordinateur comme parent
@@ -55,7 +57,7 @@ async function populate() {
       },
     ],
   };
-  const carton_materiel = new Carton(materiel);
+  const carton_materiel = new carton_model(materiel);
   const materiel_id = await carton_materiel.save().then((doc) => doc._id);
 
   // Ajout du sous-carton logiciel, avec ordinateur comme parent
@@ -74,7 +76,7 @@ async function populate() {
       },
     ],
   };
-  const carton_logiciel = new Carton(logiciel);
+  const carton_logiciel = new carton_model(logiciel);
   const logiciel_id = await carton_logiciel.save().then((doc) => doc._id);
 
   // Mise à jour de la liste de sous-cartons d'ordinateur
@@ -82,7 +84,10 @@ async function populate() {
   ordinateur.versions[0].comment.sous_cartons.push({ carton_id: materiel_id });
   ordinateur.versions[0].comment.sous_cartons.push({ carton_id: logiciel_id });
   ordinateur.versions[0].comment.texte = `Avec des {${materiel_id}}(matériels) et des {${logiciel_id}}(logiciels).`;
-  await Carton.findByIdAndUpdate(ordinateur_id, ordinateur);
+  await carton_model.findByIdAndUpdate(
+    ordinateur_id,
+    new carton_model(ordinateur)
+  );
 }
 
 /**
@@ -91,12 +96,15 @@ async function populate() {
  * @param {ObjectId} carton_id Id of the carton
  * @param {Number} depth Current depth value
  */
-async function generateCategories(carton_id, depth = 0) {
+async function generateCategories(
+  carton_id?: mongoose.Types.ObjectId,
+  depth = 0
+) {
   const max_depth = 5;
   if (!carton_id) {
     carton_id = (await createCarton()).carton_id;
   }
-  const carton = await Carton.findById(carton_id);
+  const carton = await carton_model.findById(carton_id);
   // Generate sous-cartons for all categories
   await Promise.all(
     ["quoi", "fonction", "comment"].map(async (cat) => {
@@ -137,7 +145,7 @@ async function generateCategories(carton_id, depth = 0) {
  * and originel carton.
  */
 async function createCarton(parent_id = null) {
-  let carton = new Carton({ nom: getRandomMot(), parent: parent_id });
+  let carton = new carton_model({ nom: getRandomMot(), parent: parent_id });
   return carton.save().then((doc) => {
     return { nom: doc.nom, carton_id: doc._id };
   });
