@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import cartonModel from "./models/Carton.model";
+import cartonModel, { Carton } from "./models/Carton.model";
 
 mongoose.set("useFindAndModify", false);
 const connDb = mongoose.createConnection(
@@ -9,7 +9,7 @@ const connDb = mongoose.createConnection(
     useNewUrlParser: true,
   }
 );
-const Carton = connDb.model("Carton", cartonModel);
+const Carton = connDb.model<Carton>("Carton", cartonModel);
 
 async function closeConnections() {
   try {

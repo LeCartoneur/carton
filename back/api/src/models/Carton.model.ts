@@ -8,6 +8,11 @@ const model_sous_carton = {
   version_id: { type: Number, default: 0 },
 };
 
+export interface SousCarton extends mongoose.Document {
+  carton_id: mongoose.Types.ObjectId;
+  version_id: number;
+}
+
 const model_category = {
   texte: {
     type: String,
@@ -18,6 +23,11 @@ const model_category = {
     default: () => [],
   },
 };
+
+export interface Category extends mongoose.Document {
+  texte: string;
+  sous_cartons: SousCarton[];
+}
 
 const model_version = {
   nom: {
@@ -35,6 +45,15 @@ const model_version = {
     },
   },
 };
+
+export interface CartonVersion extends mongoose.Document {
+  nom: string;
+  quoi: Category;
+  fonction: Category;
+  comment: Category;
+  exemples: Category;
+  plus_loin: SousCarton[];
+}
 
 const cartonSchema = new mongoose.Schema({
   user: {
@@ -59,5 +78,13 @@ const cartonSchema = new mongoose.Schema({
     ],
   },
 });
+
+export interface Carton extends mongoose.Document {
+  user: string;
+  parent: mongoose.Types.ObjectId;
+  nom: string;
+  private: Boolean;
+  versions: CartonVersion[];
+}
 
 export default cartonSchema;
