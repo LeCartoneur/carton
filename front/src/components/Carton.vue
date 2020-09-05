@@ -107,7 +107,6 @@ export default {
     loadCarton() {
       fetch(this.api_url + `cartons/${this.carton_id}`, {
         method: 'GET',
-        credentials: 'include',
       })
         .then((response) => {
           return response.json()

@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const model_sous_carton = {
   carton_id: {
@@ -7,6 +7,11 @@ const model_sous_carton = {
   },
   version_id: { type: Number, default: 0 },
 };
+
+export interface SousCarton {
+  carton_id: mongoose.Types.ObjectId;
+  version_id: number;
+}
 
 const model_category = {
   texte: {
@@ -18,6 +23,11 @@ const model_category = {
     default: () => [],
   },
 };
+
+export interface Category {
+  texte: string;
+  sous_cartons: SousCarton[] | CartonVersion[];
+}
 
 const model_version = {
   nom: {
@@ -35,6 +45,15 @@ const model_version = {
     },
   },
 };
+
+export interface CartonVersion {
+  nom: string;
+  quoi: Category;
+  fonction: Category;
+  comment: Category;
+  exemples: Category;
+  plus_loin: SousCarton[];
+}
 
 const cartonSchema = new mongoose.Schema({
   user: {
@@ -60,4 +79,15 @@ const cartonSchema = new mongoose.Schema({
   },
 });
 
-module.exports = cartonSchema;
+export interface Carton extends mongoose.Document {
+  user: string;
+  parent: mongoose.Types.ObjectId;
+  nom: string;
+  private: Boolean;
+  versions: CartonVersion[];
+}
+
+export type CartonFlat = Omit<Carton, "versions"> &
+  Omit<CartonVersion, "name>">;
+
+export default cartonSchema;

@@ -1,18 +1,19 @@
-const chai = require("chai");
-const { expect } = require("chai");
+import chai, { expect } from "chai";
+import chai_http from "chai-http";
+import chai_things from "chai-things";
 
-const { Carton, closeConnections } = require("../src/connection");
-const { generateCategories } = require("../src/plugins/populate");
+import { carton_model, closeConnections } from "../src/connection";
+import { generateCategories } from "../src/plugins/populate";
 
-chai.use(require("chai-http"));
-chai.use(require("chai-things"));
+chai.use(chai_http);
+chai.use(chai_things);
 
 const API_URL = process.env.API_URL || "http://localhost:8000";
 
 console.log("starting tests");
 
 before(async () => {
-  await Carton.deleteMany();
+  await carton_model.deleteMany({});
   await generateCategories();
   await closeConnections();
   return Promise.resolve();
@@ -30,9 +31,11 @@ describe("Browse the list of originels cartons", () => {
         expect(res).to.have.status(200);
         expect(res.body).to.be.an("array");
         expect(res.body.length).to.be.greaterThan(0);
-        [("_id", "user", "nom", "parent", "private")].forEach((key) =>
-          expect(res.body).to.all.have.property(key)
-        );
+        ["_id", "user", "nom", "parent", "private"].forEach((key) => {
+          res.body.forEach((e) => {
+            expect(e).to.have.property(key);
+          });
+        });
         parent_carton = res.body[0];
         done();
       });
@@ -140,11 +143,11 @@ describe("Manage a Carton", () => {
       .request(API_URL)
       .put(`/cartons/${carton_id}`)
       .send({ updates: sous_carton_update });
-    console.log(res.text);
     expect(res).to.have.status(200);
 
     // Check that the parent carton has the corresponding sous-carton
     res = await chai.request(API_URL).get(`/cartons/${carton_id}`);
+    //console.log("############# Last response: ", res);
     expect(res.body.versions[0].quoi.sous_cartons.length).to.equal(1);
     expect(res.body.versions[0].quoi.sous_cartons[0].carton_id).to.equal(
       sous_carton_id
