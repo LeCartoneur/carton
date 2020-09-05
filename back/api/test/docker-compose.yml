@@ -3,7 +3,7 @@ services:
   api-tests:
     image: api
     command: dockerize
-      -wait tcp://mongo:27017 -wait tcp://api:8000 -timeout 10s
+      -wait tcp://mongo:27017 -wait tcp://api:8000 -timeout 30s
       bash -c "npm test"
     environment:
       - API_URL=http://api:8000
