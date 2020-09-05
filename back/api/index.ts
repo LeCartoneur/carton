@@ -2,6 +2,8 @@ import { connDb } from "./src/connection.js";
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
+import carton from "./src/routes/cartons";
+
 const port = process.env.PORT || 8000;
 
 // Express app middlewares
@@ -17,7 +19,7 @@ app.use(express.json());
 app.use(morgan("common"));
 
 // API routes
-app.use("/cartons", require("./src/routes/cartons"));
+app.use("/cartons", carton);
 
 // Connections to databases
 connDb.then(() => {
