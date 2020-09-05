@@ -1,34 +1,53 @@
 import express from "express";
-import { Carton } from "../connection";
-import { generateCategories } from "../plugins/populate";
-const router = express.Router();
+import { carton_model } from "../connection";
+import {
+  Carton,
+  Category,
+  SousCarton,
+  CartonVersion,
+  CartonFlat,
+} from "../models/Carton.model";
 
-// Récupère la liste de tous les cartons originels par défaut,
-// et tous les cartons si `all` est vraie
-router.get("/list", async (req, res) => {
+/**
+ * Récupère la liste de tous les cartons originels par défaut,
+ * et tous les cartons si `all` est vrai
+ * @param req HTTP request
+ * @param res HTTP response
+ */
+async function routeGetCartons(
+  req: express.Request,
+  res: express.Response
+): Promise<void> {
   const all = req.query.all ? req.query.all : false;
   try {
-    const cartons = await Carton.find();
+    const cartons = await carton_model.find();
     if (all) {
       res.json(cartons);
     } else {
-      res.json(cartons.filter((carton) => !(carton as any).parent));
+      res.json(cartons.filter((carton) => !carton.parent));
     }
   } catch {
     res.status(500).end();
   }
-});
+}
 
-// Récupère un carton par son _id.
-// req.body.sous_carton (bool) contrôle si
-// on renvoie également les sous cartons.
-router.get("/:id", async (req, res) => {
+/**
+ * Récupère un carton par son _id.
+ * @param req HTTP request
+ * @param res HTTP response
+ */
+export async function routeGetCartonById(
+  req: express.Request,
+  res: express.Response
+): Promise<void> {
   const carton_id = req.params.id;
-  const sous_carton = req.query.sous_cartons ? req.query.sous_cartons : false;
+  const get_sous_cartons = req.query.sous_cartons
+    ? !req.query.sous_cartons
+    : false;
   try {
-    const carton = await Carton.findById(carton_id);
+    const carton = await carton_model.findById(carton_id);
     if (carton) {
-      if (!sous_carton) {
+      if (get_sous_cartons) {
         res.json(carton);
       } else {
         Object.assign(carton, await populateVersions(carton));
@@ -40,18 +59,22 @@ router.get("/:id", async (req, res) => {
   } catch {
     res.status(500).end();
   }
-});
+}
 
-// For every version of the carton, populate the types
-// ["comment", "quoi", "fonction", "exemples"] with the
-// corresponding sub-cartons.
-async function populateVersions(carton) {
+/**
+ * For each sous-cartons lists in the current version, get back the full
+ * carton object instead of just its id.
+ * @param carton Carton object
+ */
+async function populateVersions(carton: Carton): Promise<Carton> {
   try {
     for (let v of carton.versions) {
       for (let type of ["comment", "quoi", "fonction", "exemples"]) {
         Object.assign(
-          v[type].sous_cartons,
-          await getSubCartons(v[type].sous_cartons)
+          (v[type] as Category).sous_cartons,
+          await getSubCartons(
+            (v[type] as Category).sous_cartons as SousCarton[]
+          )
         );
       }
     }
@@ -61,54 +84,72 @@ async function populateVersions(carton) {
   }
 }
 
-// Return a list of carton objects from a list of sub-carton
-// objects {carton_id, version_id}
-async function getSubCartons(list) {
+/**
+ * Return a list of carton objects from a list of sub-carton objects
+ * @param list_sous_cartons List of the sous-cartons to fetch
+ */
+async function getSubCartons(list_sous_cartons: SousCarton[]) {
   try {
-    let cartons = [];
-    for (let carton of list) {
-      let res: any = await Carton.findById(carton.carton_id).lean();
-      if (res) {
-        let categories: any = {};
-        if (res.versions[carton.version_id]) {
-          categories = res.versions[carton.version_id];
+    let sous_cartons: CartonFlat[] = [];
+    for (let { carton_id, version_id } of list_sous_cartons) {
+      let sous_carton = await carton_model.findById(carton_id).lean();
+      if (sous_carton) {
+        let version: CartonVersion;
+        if (sous_carton.versions[version_id]) {
+          version = sous_carton.versions[version_id];
         } else {
-          let id_default = res.versions.find((ver) => ver.nom === "default");
-          categories = res.versions[id_default];
+          version = sous_carton.versions.find((ver) => ver.nom === "default");
         }
-        delete categories.nom;
-        delete categories._id;
-        delete res.versions;
-        cartons.push({ ...res, ...categories });
+        delete version.nom;
+        delete (version as any)._id;
+        delete sous_carton.versions;
+        sous_cartons.push({
+          ...(sous_carton as Omit<Carton, "versions">),
+          ...(version as Omit<CartonVersion, "name">),
+        });
       }
     }
-    return cartons;
+    return sous_cartons;
   } catch (err) {
     return Promise.reject(err);
   }
 }
 
-// Ajoute un nouveau carton
-router.post("/", async (req, res) => {
+/**
+ * Ajoute un nouveau carton
+ * @param req HTTP request
+ * @param res HTTP response
+ */
+export async function routeInsertCarton(
+  req: express.Request,
+  res: express.Response
+): Promise<void> {
   try {
-    const carton = new Carton(req.body);
+    const carton = new carton_model(req.body);
     await carton.save().then((doc) => {
       res.status(201).json({ id: doc._id });
     });
   } catch {
     res.status(400).end();
   }
-});
+}
 
-// Met à jour un carton existant
-router.put("/:id", async (req, res) => {
+/**
+ *  Met à jour un carton existant
+ * @param req HTTP request
+ * @param res HTTP response
+ */
+export async function routeUpdateCarton(
+  req: express.Request,
+  res: express.Response
+): Promise<void> {
   const carton_id = req.params.id;
   try {
     const operations = ["push", "set", "pull"];
     await Promise.all(
       req.body.updates.map((update) => {
         if (operations.includes(update.operation)) {
-          return Carton.findByIdAndUpdate(carton_id, {
+          return carton_model.findByIdAndUpdate(carton_id, {
             [`$${update.operation}`]: {
               [update.path]: update.value,
             },
@@ -123,10 +164,17 @@ router.put("/:id", async (req, res) => {
   } finally {
     res.end();
   }
-});
+}
 
-// Delete a carton given its id. Recursively delete its sous-carton.
-router.delete("/:id", async (req, res) => {
+/**
+ *  Delete a carton given its id. Recursively delete its sous-carton.
+ * @param req HTTP request
+ * @param res HTTP response
+ */
+export async function routeDeleteCarton(
+  req: express.Request,
+  res: express.Response
+): Promise<void> {
   // TODO: ajouter vérification user === carton.user
   // TODO: faire les suppressions au sein d'une transaction
   // https://mongoosejs.com/docs/transactions.html
@@ -138,7 +186,7 @@ router.delete("/:id", async (req, res) => {
   } finally {
     res.status(200).end();
   }
-});
+}
 
 /**
  * Recursively delete the sous-cartons of a carton
@@ -152,7 +200,7 @@ async function deleteSousCartons(carton_id) {
         deleteSousCartons(sous_carton_id);
       })
     );
-    await Carton.findByIdAndDelete(carton_id);
+    await carton_model.findByIdAndDelete(carton_id);
   } catch (err) {
     return Promise.reject(err);
   } finally {
@@ -168,7 +216,7 @@ async function deleteSousCartons(carton_id) {
 async function getSousCartonsFlat(carton_id) {
   let sous_cartons_flat = [];
   try {
-    let carton: any = await Carton.findById(carton_id);
+    let carton = await carton_model.findById(carton_id);
     if (carton.versions.length)
       carton.versions.forEach((v) => {
         ["quoi", "comment", "fonction", "exemples", "plus_loin"].forEach(
@@ -187,18 +235,11 @@ async function getSousCartonsFlat(carton_id) {
   }
 }
 
-// Si on est dans l'alpha, la route supprime les cartons existants
-// et insère des dummy cartons dans la base vide.
-if (process.env.ALPHA === "true") {
-  router.post("/reset", async (req, res) => {
-    if (req.body.mdp === process.env.RESET_KEY) {
-      //await Carton.deleteMany();
-      //await generateCategories();
-      res.status(205).end();
-    } else {
-      res.status(404).end();
-    }
-  });
-}
+const router = express.Router();
+router.get("/list", routeGetCartons);
+router.get("/:id", routeGetCartonById);
+router.post("/", routeInsertCarton);
+router.put("/:id", routeUpdateCarton);
+router.delete("/:id", routeDeleteCarton);
 
-module.exports = router;
+export default router;

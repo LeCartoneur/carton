@@ -9,7 +9,7 @@ const connDb = mongoose.createConnection(
     useNewUrlParser: true,
   }
 );
-const Carton = connDb.model<Carton>("Carton", cartonModel);
+const carton_model = connDb.model<Carton>("Carton", cartonModel);
 
 async function closeConnections() {
   try {
@@ -17,4 +17,4 @@ async function closeConnections() {
   } catch (error) {}
 }
 
-export { Carton, connDb, closeConnections };
+export { carton_model, connDb, closeConnections };
