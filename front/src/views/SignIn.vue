@@ -44,7 +44,6 @@ export default {
       if (this.same_pwd && this.alpha_key && this.pwd && this.pseudo) {
         fetch(process.env.VUE_APP_API_URL + 'users/add', {
           method: 'POST',
-          credentials: 'include',
           headers: {
             'content-type': 'application/json',
           },
