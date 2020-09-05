@@ -40,17 +40,18 @@ export async function routeGetCartonById(
   req: express.Request,
   res: express.Response
 ): Promise<void> {
-  const carton_id = req.params.id;
-  const get_sous_cartons = req.query.sous_cartons
-    ? !req.query.sous_cartons
-    : false;
   try {
+    const carton_id = req.params.id;
+    const get_sous_cartons = req.query.sous_cartons
+      ? req.query.sous_cartons
+      : false;
     const carton = await carton_model.findById(carton_id);
     if (carton) {
       if (get_sous_cartons) {
+        // TODO: what if a carton does not have any sous carton ?
+        Object.assign(carton, await populateVersions(carton));
         res.json(carton);
       } else {
-        Object.assign(carton, await populateVersions(carton));
         res.json(carton);
       }
     } else {
