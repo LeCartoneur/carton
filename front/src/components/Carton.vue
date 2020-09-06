@@ -139,7 +139,7 @@ export default {
       this.loadVolets()
     },
     goToCarton(id) {
-      this.$router.push({ path: `/visionneuse/${id}` })
+      this.$router.push({ path: `/carton/${id}` })
     },
     reload() {
       this.loadCarton()

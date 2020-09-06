@@ -38,7 +38,7 @@ export default {
      * vue router.
      */
     goToCarton(id) {
-      this.$router.push({ path: `/visionneuse/${id}` })
+      this.$router.push({ path: `/carton/${id}` })
     },
     /**
      * Get the list of all originels sous-cartons.
