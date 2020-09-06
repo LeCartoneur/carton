@@ -1,15 +1,20 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link>
-      |
-      <router-link to="/about">About</router-link>
-      <!-- |
-      <router-link to="/signin">Sign in</router-link> -->
-    </div>
+    <navbar />
     <router-view />
   </div>
 </template>
+
+<script lang="ts">
+import Vue from 'vue'
+import Navbar from './components/Navbar.vue'
+
+export default Vue.extend({
+  components: {
+    Navbar,
+  },
+})
+</script>
 
 <style>
 #app {
@@ -22,13 +27,7 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-#nav {
-  position: absolute;
-  right: 2vw;
-  bottom: 0;
-}
-
 body {
-  height: 100vh;
+  height: calc(100vh - 35px);
 }
 </style>

@@ -67,7 +67,7 @@ export default {
 @media (min-width: 700px) {
   .left-tools {
     left: 0;
-    top: 20px;
+    top: calc(35px + 18px + 5px);
 
     width: 200px;
     height: 56px;
@@ -80,7 +80,7 @@ export default {
 @media (max-width: 700px) {
   .left-tools {
     left: 0;
-    top: 2px;
+    top: calc(35px + 18px + 5px);
 
     width: 115px;
     height: 50px;
