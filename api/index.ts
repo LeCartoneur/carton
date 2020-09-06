@@ -1,4 +1,4 @@
-import { connDb } from "./src/connection.js";
+import { connDb } from "./src/connection";
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
