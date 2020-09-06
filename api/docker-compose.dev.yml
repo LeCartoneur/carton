@@ -1,0 +1,8 @@
+version: "3"
+services:
+  api:
+    ports:
+      - 8000:8000
+    command: npm run start:dev
+    volumes:
+      - .:/usr/src/app
