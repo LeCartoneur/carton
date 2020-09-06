@@ -105,7 +105,7 @@ export default {
   },
   methods: {
     loadCarton() {
-      fetch(this.api_url + `cartons/${this.carton_id}`, {
+      fetch(this.api_url + `cartons/${this.carton_id}/?sous_cartons=true`, {
         method: 'GET',
       })
         .then((response) => {
