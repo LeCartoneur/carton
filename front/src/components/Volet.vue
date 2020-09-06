@@ -42,15 +42,15 @@ import EditeurVolet from './EditeurVolet.vue'
 
 const configs = {
   quoi: {
-    titre: 'Keçeçe',
+    titre: "Qu'est ce que c'est",
     color: 'rgba(0, 229, 255, 1)',
   },
   fonction: {
-    titre: 'Keçafait',
+    titre: "Qu'est ce que ça fait",
     color: 'rgba(29, 233, 182, 1)',
   },
   comment: {
-    titre: "Komment ça l'fait",
+    titre: 'Comment ça le fait',
     color: 'rgba(0, 230, 118, 1)',
   },
 }

@@ -18,7 +18,11 @@ export default {
   computed: {
     description() {
       if (this.carton.fonction) {
-        return splitTxt(this.carton.fonction.texte ? this.carton.fonction.texte : 'Pas de texte.')
+        return splitTxt(
+          this.carton.fonction.texte
+            ? this.carton.fonction.texte
+            : 'Ce sous-carton ne contient pas de texte descriptif.'
+        )
           .map((txt) => txt.txt)
           .join('')
       } else return ''
