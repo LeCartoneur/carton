@@ -12,11 +12,6 @@ services:
     restart: always
     volumes:
       - db:/data/db
-  mongo_users:
-    image: mongo
-    restart: always
-    volumes:
-      - db_users:/data/db
   redis_store:
     image: redis
 
