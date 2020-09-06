@@ -1,10 +1,10 @@
 <template>
-  <div class="home">
-    <h1 class="home__titre">Vous n'avez pas de Carton ouvert! :(</h1>
-    <h3 class="home__sous-titre">
-      ... mais vous pouvez en sélectionner un parmi cette liste :
-    </h3>
-    <ul class="home__liste-cartons">
+  <div>
+    <h1>
+      Cartons disponibles
+    </h1>
+    <p class="carton__sous-titre">Cliquez sur un carton</p>
+    <ul class="carton__liste-cartons">
       <li
         v-for="carton in cartons_originels"
         :key="carton.nom"
@@ -14,11 +14,11 @@
         {{ carton.nom }}
       </li>
     </ul>
-    <h3 class="home__sous-titre">
-      .. ou bien
-      <span class="home__creer-carton" @click="createNewCarton">créer un nouveau carton</span>
+    <p class="home__sous-titre">
+      Ou
+      <span class="home__creer-carton" @click="createNewCarton">créez un nouveau carton</span>
       !
-    </h3>
+    </p>
   </div>
 </template>
 
@@ -78,43 +78,44 @@ export default {
 </script>
 
 <style scoped>
-.home {
-  box-sizing: border-box;
-  width: 100%;
-  height: 100%;
-  border-style: inset;
-  border-color: rgb(121, 93, 44);
-  background-color: rgb(165, 136, 85);
-  overflow-x: hidden;
-  overflow-y: auto;
-
-  padding: 0 40px;
-  display: flex;
-  flex-direction: column;
-
-  border-width: 18px;
-}
-
-.home__titre {
-  font-size: 2rem;
+h1 {
+  margin: 2rem auto 0rem;
   text-align: center;
 }
 
-.home__sous-titre {
-  font-size: 1.5rem;
+.carton__sous-titre {
+  margin: auto;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+  font-style: italic;
 }
 
-.home__liste-cartons li {
-  font-size: 1.3rem;
-}
-@media (max-width: 700px) {
-  .home {
-    border-width: 8px;
-  }
+p {
+  margin: auto;
+  width: 600px;
+  font-size: 1.2rem;
+  text-align: center;
+  margin-top: 1rem;
 }
 
-.carton-link:hover {
-  background-color: coral;
+.carton__liste-cartons {
+  margin: auto;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  width: 300px;
+  min-height: 200px;
+  border: 1px dotted black;
+  border-radius: 3px;
+  background-color: blanchedalmond;
+}
+
+.carton__liste-cartons li {
+  text-decoration: none;
+}
+.carton__liste-cartons li:hover {
+  text-decoration: none;
+  font-style: italic;
 }
 
 .home__creer-carton {
@@ -123,6 +124,6 @@ export default {
 }
 .home__creer-carton:hover {
   font-style: normal;
-  background-color: khaki;
+  background-color: rgb(251, 219, 171);
 }
 </style>
