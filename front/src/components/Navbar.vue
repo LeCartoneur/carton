@@ -23,11 +23,15 @@ export default Vue.extend({})
 a {
   margin: auto 1rem;
   align-self: center;
+  text-decoration: none;
+  color: black;
+  font-size: 1.2rem;
 }
 
 #nav {
   width: 100%;
-  height: 35px;
-  background-color: white;
+  height: 34px;
+  background-color: rgb(251, 219, 171);
+  border-bottom: 1px solid black;
 }
 </style>
