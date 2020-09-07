@@ -207,8 +207,4 @@ export default {
     justify-content: start;
   }
 }
-
-.carton-link:hover {
-  background-color: coral;
-}
 </style>
