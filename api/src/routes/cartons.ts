@@ -47,6 +47,7 @@ export async function routeGetCartonById(
       : false;
     const carton = await carton_model.findById(carton_id);
     if (carton) {
+      res.append("Cache-Control", "no-cache");
       if (get_sous_cartons) {
         // TODO: what if a carton does not have any sous carton ?
         Object.assign(carton, await populateVersions(carton));
