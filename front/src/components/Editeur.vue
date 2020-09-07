@@ -1,5 +1,5 @@
 <template>
-  <button @click="save">Save</button>
+  <button @click="save" class="editeur__save-btn">Enregistrer 💾</button>
 </template>
 
 <script>
@@ -208,4 +208,21 @@ export default {
 }
 </script>
 
-<style></style>
+<style scoped>
+.editeur__save-btn {
+  position: absolute;
+  bottom: 10px;
+  padding: 10px;
+  margin: 1rem auto;
+  display: block;
+  border-radius: 3px;
+  border: 2px solid rgb(104, 104, 104);
+  font-size: 1.1rem;
+  background-color: rgb(251, 219, 171);
+}
+
+.editeur__save-btn:hover {
+  padding: 9px;
+  border: 3px solid rgb(104, 104, 104);
+}
+</style>
