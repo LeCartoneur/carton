@@ -4,19 +4,21 @@
       Cartons disponibles
     </h1>
     <p class="carton__sous-titre">Cliquez sur un carton</p>
-    <ul class="carton__liste-cartons">
-      <li
-        v-for="carton in cartons_originels"
-        :key="carton.nom"
-        @click="goToCarton(carton._id)"
-        class="carton-link"
-      >
-        {{ carton.nom }}
-      </li>
-    </ul>
+    <div class="carton__container-liste-cartons">
+      <ul class="carton__liste-cartons">
+        <li
+          v-for="carton in cartons_originels"
+          :key="carton.nom"
+          @click="goToCarton(carton._id)"
+          class="carton-link"
+        >
+          {{ carton.nom }}
+        </li>
+      </ul>
+    </div>
     <p class="home__sous-titre">
       Ou
-      <span class="home__creer-carton" @click="createNewCarton">créez un nouveau carton</span>
+      <span class="carton__creer-carton" @click="createNewCarton">créez un nouveau carton</span>
       !
     </p>
   </div>
@@ -93,17 +95,25 @@ h1 {
 
 p {
   margin: auto;
-  width: 600px;
+  max-width: 600px;
+  padding: 0 2rem;
   font-size: 1.2rem;
   text-align: center;
   margin-top: 1rem;
 }
 
+.carton__container-liste-cartons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
 .carton__liste-cartons {
-  margin: auto;
+  margin: 1rem;
   padding-top: 1rem;
   padding-bottom: 1rem;
-  width: 300px;
+  max-width: 300px;
+  flex-grow: 1;
   min-height: 200px;
   border: 1px dotted black;
   border-radius: 3px;
@@ -118,11 +128,11 @@ p {
   font-style: italic;
 }
 
-.home__creer-carton {
+.carton__creer-carton {
   font-style: italic;
-  text-decoration: underline dotted khaki;
+  text-decoration: underline dotted rgb(255, 198, 112) 3px;
 }
-.home__creer-carton:hover {
+.carton__creer-carton:hover {
   font-style: normal;
   background-color: rgb(251, 219, 171);
 }

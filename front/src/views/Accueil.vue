@@ -19,7 +19,8 @@ h1 {
 
 p {
   margin: auto;
-  width: 600px;
+  max-width: 600px;
+  padding: 0 2rem;
   font-size: 1.2rem;
 }
 
