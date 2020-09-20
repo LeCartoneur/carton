@@ -1,0 +1,33 @@
+version: "3"
+services:
+  api:
+    build: .
+    image: api
+    command: npm start
+    restart: always
+    env_file:
+      - api.env
+    environment:
+      - VIRTUAL_HOST=api.carton.combiendecarbone.fr
+      - VIRTUAL_PORT=8000
+      - LETSENCRYPT_HOST=api.carton.combiendecarbone.fr
+      - LETSENCRYPT_EMAIL=contact@combiendecarbone.fr
+    expose: 8000
+    networks:
+      - nginx-proxy
+  mongo:
+    image: mongo
+    restart: always
+    volumes:
+      - db:/data/db
+  redis_store:
+    image: redis
+
+volumes:
+  db:
+  db_users:
+
+networks:
+  proxy:
+    external:
+      name: nginx-proxy
